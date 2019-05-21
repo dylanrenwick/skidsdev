@@ -1,6 +1,6 @@
 ![HUGE, formerly "php-login" logo](_pictures/huge.png)
 
-# HUGE
+# Gargantua
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/panique/huge/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/panique/huge/?branch=master)
 [![Code Climate](https://codeclimate.com/github/panique/huge/badges/gpa.svg)](https://codeclimate.com/github/panique/huge)
@@ -8,6 +8,23 @@
 [![Travis CI](https://travis-ci.org/panique/huge.svg?branch=master)](https://travis-ci.org/panique/huge)
 [![Dependency Status](https://www.versioneye.com/user/projects/54ca11fbde7924f81a000010/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54ca11fbde7924f81a000010)
 [![Support](https://supporterhq.com/api/b/9guz00i6rep05k1mwxyquz30k)](https://supporterhq.com/give/9guz00i6rep05k1mwxyquz30k)
+
+Gargantua is a fork of the php-login project "HUGE".
+
+As HUGE has reached soft end of life, this is a community continuation of the project.  
+Some new things to expect in Gargantua:
+
+ - Full PHP 7.3 support by default
+    - HUGE was designed to be used with PHP 5.5 or newer. Unfortunately this limited the framework from using features new to PHP 7
+ - Cleaner and explicit versioning
+    - Did you know HUGE had versions? Most people didn't, it wasn't very clear
+ - More features!
+    - Optional Templating
+    - Default actions
+    - Markdown Support
+    - OAuth Support
+
+### What is HUGE?
 
 Just a simple user authentication solution inside a super-simple framework skeleton that works out-of-the-box
 (and comes with an auto-installer), using the future-proof official bcrypt password hashing/salting implementation of 
@@ -27,32 +44,11 @@ Some interesting Buzzwords in this context: [KISS](http://en.wikipedia.org/wiki/
 [YAGNI](http://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Feature Creep](https://en.wikipedia.org/wiki/Feature_creep),
 [Minimum viable product](https://en.wikipedia.org/wiki/Minimum_viable_product).
 
-#### HUGE has reached "soft End Of Life"
-
-To keep this project stable, secure, clean and minimal I've decided to reduce the development of HUGE to a 
-minimum. *Don't worry, this is actually a good thing:* New features usually mean new bugs, lots of testing, fixes, 
-incompatibilities, and for some people even hardcore update stress. As HUGE is a security-critical script new features 
-are not as important as a stable and secure core, this is why people use it. This means:
-
-- HUGE will not get new features
-- but will be maintained, so it will get bugfixes, corrections etc for sure, maybe for years
-
-And to be honest, maintaining a framework for free in my rare free-time is also not what I want to do permanently. :)
-
-Finally a little note: The PHP world has evolved dramatically, we have excellent frameworks with awesome features and 
-big professional teams behind, very well written documentations and large communities, so there's simply no reason 
-to put much work into another framework. Instead, please commit to the popular frameworks, then your work will have
-much more impact and is used by much more people!
-
-Thanks to everybody around this project, have a wonderful time! 
-XOXO,
-Chris
-
 #### Releases & development  
 
-* stable [v3.1](https://github.com/panique/huge/releases/tag/v3.1),
-* public beta branch: [master](https://github.com/panique/huge)
-* public in-development branch (please commit new code here): [develop](https://github.com/panique/huge/tree/develop)
+* Stable: **TBA**,
+* Public beta: [master](https://github.com/dylanrenwick/gargantua)
+* Public in-dev: [develop](https://github.com/dylanrenwick/gargantua/tree/develop) (please only submit PRs here)
 
 #### Quick-Index 
 
@@ -81,67 +77,42 @@ Chris
 + [Code-Quality scanner links](#code-quality)
 + [Report a bug](#bug-report)
 
-### The History of HUGE
-
-Back in 2010/2011 there were no useful login solutions in the PHP world, at least not for non-experts. So I did the worst 
-mistake every young developer does: Trying to build something by myself without having any clue about security basics.
-What made it even worse was: The web was (and is) full of totally broken tutorials about building user authentication 
-systems, even the biggest companies in the world did this completely wrong (we are talking about SONY, LinkedIn and
-Adobe here), and also lots of major framework in all big programming languages (!) used totally outdated and insecure
-password saving technologies.
-
-However, in 2012 security expert [Anthony Ferrara](https://github.com/ircmaxell) published a [little PHP library](https://github.com/ircmaxell/password_compat),
-allowing extremely secure, modern and correct hashing of passwords in PHP 5.3 and 5.4, usable by every developer without any stress and without any knowledge
-about security internals. The script was so awesome that it was written into the core of PHP 5.5, it's the de-facto standard these days.
-
-When this came out I tried to use this naked library to build a fully working out-of-the-box login system for several private and commercial projects,
-and put the code on GitHub. Lots of people found this useful, contributed and bugfixed the project, made forks, smaller and larger versions.
-The result is this project.
- 
-Please note: Now, in 2015, most major frameworks have excellent user authentication logic embedded by default. This was 
-not the case years ago. So, from today's perspective it might be smarter to chose Laravel, Yii or Symfony for serious
-projects. But feel free to try out HUGE, the auto-installer will spin up a fully working installation within minutes and
-without any configuration.
-
-And why the name "HUGE" ? It's a nice combination to 
-[TINY](https://github.com/panique/tiny), 
-[MINI](https://github.com/panique/mini) and 
-[MINI2](https://github.com/panique/mini2),
-[MINI3](https://github.com/panique/mini3),
-which are some of my other older projects. Super-minimal micro frameworks for extremely fast and simple development of simple websites.
-
 ### Features <a name="features"></a>
-* built with the official PHP password hashing functions, fitting the most modern password hashing/salting web standards
-* proper security features, like CSRF blocking (via form tokens), encryption of cookie contents etc.
-* users can register, login, logout (with username, email, password)
-* password-forget / reset
-* remember-me (login via cookie)
-* account verification via mail
-* captcha
-* failed-login-throttling
-* user profiles
-* account upgrade / downgrade
-* simple user types (type 1, type 2, admin)
-* supports local avatars and remote Gravatars
-* supports native mail and SMTP sending (via PHPMailer and other tools)
-* uses PDO for database access for sure, has nice DatabaseFactory (in case your project goes big) 
-* uses URL rewriting ("beautiful URLs")
-* proper split of application and public files (requests only go into /public)
-* uses Composer to load external dependencies (PHPMailer, Captcha-Generator, etc.) for sure
-* fits PSR-0/1/2/4 coding guidelines
-* uses [Post-Redirect-Get pattern](https://en.wikipedia.org/wiki/Post/Redirect/Get) for nice application flow
-* masses of comments
-* is actively maintained and bug-fixed (however, no big new features as project slowly reaches End of Life)
+* Built with the official PHP password hashing functions, fitting the most modern password hashing/salting web standards
+* Proper security features, like CSRF blocking (via form tokens), encryption of cookie contents etc.
+* Users can register, login, logout (with username, email, password)
+* Password-forget / reset
+* Remember-me (login via cookie)
+* Account verification via mail
+* Captcha
+* Failed-login-throttling
+* User profiles
+* Account upgrade / downgrade
+* Simple user types (type 1, type 2, admin)
+* Supports local avatars and remote Gravatars
+* Supports native mail and SMTP sending (via PHPMailer and other tools)
+* Uses PDO for database access for sure, has nice DatabaseFactory (in case your project goes big) 
+* Uses URL rewriting ("beautiful URLs")
+* Proper split of application and public files (requests only go into /public)
+* Uses Composer to load external dependencies (PHPMailer, Captcha-Generator, etc.) for sure
+* Fits PSR-0/1/2/4 coding guidelines
+* Uses [Post-Redirect-Get pattern](https://en.wikipedia.org/wiki/Post/Redirect/Get) for nice application flow
+* Masses of comments
+* Is actively maintained and bug-fixed
 
 ### Planned features
 
 * A real documentation (currently there's none, but the code is well commented)
+* Markdown support
   
 ### Live-Demo <a name="live-demo"></a>
 
-See a [live demo of older 3.0 version here](http://104.131.8.128) and [the server's phpinfo() here](104.131.8.128/info.php).
+See a [live demo of older HUGE 3.0 version here](http://104.131.8.128) and [the server's phpinfo() here](104.131.8.128/info.php).
 
 ### Support the project <a name="support"></a>
+
+Gargantua is a community-driven effort, but wouldn't exist without the work done by the developer of HUGE.  
+Gargantua doesn't currently need support, so go support HUGE instead. Here's his support plug:
 
 There is a lot of work behind this project. I might save you hundreds, maybe thousands of hours of work (calculate that
 in developer costs). So when you are earning money by using HUGE, be fair and give something back to open-source.
@@ -155,15 +126,15 @@ Also feel free to contribute to this project.
 ### License <a name="license"></a>
 
 Licensed under [MIT](http://www.opensource.org/licenses/mit-license.php). 
-Totally free for private or commercial projects.
+Totally free for private or commercial projects, or any other uses.
 
 ### Requirements <a name="requirements"></a>
 
 Make sure you know the basics of object-oriented programming and MVC, are able to use the command line and have
 used Composer before. This script is not for beginners.
 
-* **PHP 5.5+**
-* **MySQL 5** database (better use versions 5.5+ as very old versions have a [PDO injection bug](http://stackoverflow.com/q/134099/1114320)
+* **PHP 7.3+**
+* **MySQL 5** database (build using MariaDB 10.3. Research your choice first)
 * installed PHP extensions: pdo, gd, openssl (the install guideline shows how to do)
 * installed tools on your server: git, curl, composer (the install guideline shows how to do)
 * for professional mail sending: an SMTP account (I use [SMTP2GO](http://www.smtp2go.com/?s=devmetal))
@@ -481,33 +452,17 @@ to go into the main version of HUGE, but have a look into these tickets if you a
  - [HTML mails](https://github.com/panique/huge/issues/738)
  - [Deep user roles / user permission system](https://github.com/panique/huge/pull/691)
  
-### Future of HUGE: Announcing "soft End Of Life" <a name="future"></a>
- 
-The idea of this project is and was to provide a super-simple barebone application with a full user authentication
-system inside that just works fine and stable. Due to the highly security-related nature of this script any changes 
-mean a lot of work, lots of testing, catching edge cases etc., and in the end I spent 90% of the time testing and fixing
-new features or new features break existing stuff, and doing this is really not what anybody wants to do for free in
-the rare free-time :)
+### Coding guideline behind Gargantua
 
-To keep the project stable, clean and maintainable, I would kindly announce the "soft-End of Life" for this project, 
-meaning:
-
-A. HUGE will not get any new features in the future, but ...
-B. bugfixes and corrections will be made, probably for years
-
-### Coding guideline behind HUGE
-
-While HUGE was in development, there were 3 main rules that helped me (and probably others) to write minimal, clean
- and working code. Might be useful for you too:
+While HUGE was in development, there were 3 main rules that helped to write minimal, clean and working code.  
+Might be useful for you too:
 
 1. Reduce features to the bare minimum.
 2. Don't implement features that are not needed by most users.
 3. Only build everything for the most common use case (like MySQL, not PostGre, NoSQL etc).
 
-As noted in the intro of this README, there are also some powerful concepts that might help you when developing cool 
-stuff: [KISS](http://en.wikipedia.org/wiki/KISS_principle), 
-[YAGNI](http://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Feature Creep](https://en.wikipedia.org/wiki/Feature_creep),
-[Minimum viable product](https://en.wikipedia.org/wiki/Minimum_viable_product).
+There are also some powerful concepts that might help you when developing cool stuff:  
+[KISS](http://en.wikipedia.org/wiki/KISS_principle), [YAGNI](http://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Feature Creep](https://en.wikipedia.org/wiki/Feature_creep), [Minimum viable product](https://en.wikipedia.org/wiki/Minimum_viable_product).
  
 #### List of features / ideas provided in tickets / pull requests
 
@@ -535,43 +490,18 @@ into your forks of the project:
 [ticket #603](https://github.com/panique/huge/issues/603)
 * How to run without using Composer [ticket #826](https://github.com/panique/huge/issues/826)
 
-### Why is there no support forum (anymore) ? <a name="why-no-support-forum"></a>
-
-There were two (!) support forums for v1 and v2 of this project (HUGE is v3), and both were vandalized by people who
-didn't even read the readme and / or the install guidelines. Most asked question was "script does not work plz help"
-without giving any useful information (like code or server setup or even the version used). While I'm writing these 
-lines somebody just asked via Twitter "how to install without Composer". You know what I mean :) - 99% of the questions 
-were not necessary if the people would had read the guidelines, do a minimal research on their own or would stop making 
-things so unnecessarily complicated. And even when writing detailed answers most of them still messed it up, resulting 
-in rants and complaints (for free support for a free software!). It was just frustrating to deal with this every day, 
-especially when people take it for totally granted that *it's the duty* of open-source developers to give detailed, 
-free and personal support for every "plz help"-request.
- 
-So I decided to completely stop any free support. For serious questions about real problems inside the script please
-use the GitHub issues feature.
-
 ### Zero tolerance for idiots, trolls and vandals! <a name="zero-tolerance"></a>
 
-Harsh words, but as basically every public internet project gets harassed, vandalized and trolled these days by very 
-strange people it's necessary: Some simple rules. 
+This was a policy put in place by the creator of the original HUGE framework. However it's an open-source ideology that I don't agree with.
 
-1. Respect that this is just a simple script written by unpaid volunteers in their free-time. 
-   This is NOT business-software you've bought for $10.000.
-   There's no reason to complain (!) about free open-source software. The attitude against free software
-   is really frustrating these days, people take everything for granted without realizing the work behind it, and the
-   fact that they get serious software totally for free, saving thousands of dollars. If you don't like it, then don't 
-   use it. If you want a feature, try to take part in the process, maybe even build it by yourself and add it to the 
-   project! Be nice and respectful. Constructive criticism is for sure always welcome!
-   
-2. Don't bash, don't hate, don't spam, don't vandalize. Please don't ask for personal free support, don't ask if 
-   somebody could do your work for you. Before you ask something, make sure you've read the README, followed every 
-   tutorial, double-checked the code and tried to solve the problem by yourself.
+This is a product that I am putting out for free. Nontheless it is still a product.  
+Don't expect enterprise level support, but this project is still tied to my name, and my reputation. I want this project to be the best it can be, and I want it to work for its users. As such, I am happy to offer a level of support a little above the "I'm not obligated to give you anything" mentality of other FOSS developers.
 
-Trolls and very annoying people will get a permanent ban / block. GitHub has a very powerful anti-abuse team.
+That said, trolls, vandals, and entitlement are not tolerated.
 
 ### Contribute <a name="contribute"></a>
 
-Please commit only in *develop* branch. The *master* branch will always contain the stable version.
+Please submit PRs only in *develop* branch. The *master* branch will always contain the stable version. Merges into master will be made at my discretion, or if a recognized contributor believes it's a good point for a release, and submits a merge PR.
 
 ### Code-Quality scanner links <a name="code-quality"></a>
 
@@ -583,14 +513,15 @@ Please commit only in *develop* branch. The *master* branch will always contain 
 
 ### Found a bug (Responsible Disclosure) ? <a name="bug-report"></a>
 
-Due to the possible consequences when publishing a bug on a public open-source project I'd kindly ask you to send really
-big bugs to my email address, not posting this here. If the bug is not interesting for attackers: Feel free to create
-an normal GitHub issue.
+It is often (rightly so) considered dangerous to report major bugs and vulnerabilities publicly due to the possible consequences when publishing a bug.  
+However requiring that such bugs be mailed to me creates an assumption and expectation that I and I alone will *always* be available to address these emails.  
+As such, for the time being, please report all bugs, large or small, using GitHub issues.  
+If this becomes a problem in the future, we will set up a system such that bug reports can be made and sent to the entire team without the public having visibility.
 
 ### Current and further development
 
 See active issues here:
-https://github.com/panique/huge/issues?state=open
+https://github.com/dylanrenwick/gargantua/issues?state=open
 
 ### Why you should use a favicon.ico in your project :)
 
@@ -599,7 +530,7 @@ Interesting issue: When a user hits your website, the user's browser will also r
 page for each file. This wastes a lot of server power and is also useless, therefore make sure you always have favicons
 or handle this from Apache/nginx level.
 
-HUGE tries to handle this by sending an empty image in the head of the view/_templates/header.php !
+Gargantua tries to handle this by sending an empty image in the head of the view/_templates/header.php !
 
 More inside this ticket: [Return proper 404 for missing favicon.ico, missing images etc.](https://github.com/panique/huge/issues/530)
 
