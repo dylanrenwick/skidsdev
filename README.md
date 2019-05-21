@@ -1,5 +1,3 @@
-![HUGE, formerly "php-login" logo](_pictures/huge.png)
-
 # Gargantua
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/panique/huge/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/panique/huge/?branch=master)
