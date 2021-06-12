@@ -15,19 +15,32 @@ class CaptchaModel
      */
     public static function generateAndShowCaptcha()
     {
-        // create a captcha with the CaptchaBuilder lib (loaded via Composer)
-        $captcha = new Gregwar\Captcha\CaptchaBuilder;
-        $captcha->build(
-            Config::get('CAPTCHA_WIDTH'),
-            Config::get('CAPTCHA_HEIGHT')
-        );
+        $a = rand(1,100);
+        $b = rand(1,100);
+        $op = rand(0,3);
 
-        // write the captcha character into session
-        Session::set('captcha', $captcha->getPhrase());
+        switch($op) {
+            case 0:
+                $result = $a + $b;
+                $op = '+';
+                break;
+            case 1:
+                $result = $a - $b;
+                $op = '-';
+                break;
+            case 2:
+                $result = $a * $b;
+                $op = 'x';
+                break;
+            case 3:
+                $result = $a / $b;
+                $op = '/';
+                break;
+        }
 
-        // render an image showing the characters (=the captcha)
-        header('Content-type: image/jpeg');
-        $captcha->output();
+        Session::set('captcha', $result);
+
+        return "What is $a $op $b?";
     }
 
     /**

@@ -47,12 +47,13 @@ class DatabaseFactory
                    Config::get('DB_TYPE') . ':host=' . Config::get('DB_HOST') . ';dbname=' .
                    Config::get('DB_NAME') . ';port=' . Config::get('DB_PORT') . ';charset=' . Config::get('DB_CHARSET'),
                    Config::get('DB_USER'), Config::get('DB_PASS'), $options
-                   );
+                );
             } catch (PDOException $e) {
 
                 // Echo custom message. Echo error code gives you some info.
                 echo 'Database connection can not be estabilished. Please try again later.' . '<br>';
-                echo 'Error code: ' . $e->getCode();
+                echo 'Error code: ' . $e->getCode() . '<br>';
+                echo 'Error: ' . $e->getMessage();
 
                 // Stop application :(
                 // No connection, reached limit connections etc. so no point to keep it running

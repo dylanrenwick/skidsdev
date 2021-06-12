@@ -30,6 +30,11 @@ class Session
         $_SESSION[$key] = $value;
     }
 
+    public static function delete($key)
+    {
+        unset($_SESSION[$key]);
+    }
+
     /**
      * gets/returns the value of a specific key of the session
      *

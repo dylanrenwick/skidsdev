@@ -1,7 +1,15 @@
-        <div class="footer"></div>
+        </div>
     </div><!-- close class="wrapper" -->
 
-    <!-- the support button on the top right -->
-    <a class="support-button" href="https://affiliates.a2hosting.com/idevaffiliate.php?id=4471&url=579" target="_blank"></a>
+    <div id="footer" class="animated zoomInLeft slower">
+    </div>
+
+    <script src="<?=Config::get('URL');?>js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="<?=Config::get('URL');?>js/plugins.js"></script>
+    <script src="<?=Config::get('URL');?>js/main.js"></script>
+    <script src="<?=Config::get('URL');?>js/highlight.pack.js"></script>
+    <script src="<?=Config::get('URL');?>js/modal.js"></script>
+    <script src="<?=Config::get('URL');?>js/ajax.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </body>
 </html>

@@ -74,4 +74,17 @@ class Filter
         // other types are untouched
         return $value;
     }
+
+    public static function MarkdownFilter(&$value)
+    {
+        if (is_string($value)) {
+            $value = preg_replace("/\[(.*?)\]\(\w+:\/\/\w+\..+?\)/", "$1", $value);
+        } else if (is_array($value) || is_object($value)) {
+            foreach ($value as &$valueInValue) {
+                self::MarkdownFilter($valueInValue);
+            }
+        }
+
+        return $value;
+    }
 }

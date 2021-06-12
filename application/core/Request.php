@@ -9,6 +9,10 @@
  */
 class Request
 {
+    public static $controller_name;
+    public static $action_name;
+    public static $parameters;
+
     /**
      * Gets/returns the value of a specific key of the POST super-global.
      * When using just Request::post('x') it will return the raw and untouched $_POST['x'], when using it like
@@ -50,6 +54,26 @@ class Request
         }
     }
 
+    public static function splitUrl()
+    {
+        if (isset($_GET['url'])) {
+            // split URL
+            $url = trim(Request::get('url'), '/');
+            $url = filter_var($url, FILTER_SANITIZE_URL);
+            $url = explode('/', $url);
+
+            // put URL parts into according properties
+            Request::$controller_name = isset($url[0]) ? $url[0] : null;
+            Request::$action_name = isset($url[1]) ? $url[1] : null;
+
+            // remove controller name and action name from the split URL
+            unset($url[0], $url[1]);
+
+            // rebase array keys and store the URL parameters
+            Request::$parameters = array_values($url);
+        }
+    }
+
     /**
      * gets/returns the value of a specific key of the COOKIE super-global
      * @param mixed $key key
@@ -60,5 +84,10 @@ class Request
         if (isset($_COOKIE[$key])) {
             return $_COOKIE[$key];
         }
+    }
+
+    public static function doNotTrack()
+    {
+        return (isset($_SERVER['HTTP_DNT']) && (int)$_SERVER['HTTP_DNT'] === 1);
     }
 }

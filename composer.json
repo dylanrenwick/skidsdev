@@ -13,5 +13,12 @@
     },
     "autoload": {
         "psr-4": { "": ["application/core/", "application/model/"] }
+    },
+    "require": {
+        "erusev/parsedown": "^1.7",
+        "league/oauth2-client": "^2.6",
+        "wohali/oauth2-discord-new": "^1.1",
+        "league/oauth2-github": "^2.0",
+        "league/oauth2-google": "^4.0"
     }
 }

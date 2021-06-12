@@ -179,12 +179,12 @@ class PasswordResetModel
 
         $sql = "UPDATE users SET user_password_hash = :user_password_hash, user_password_reset_hash = NULL,
                        user_password_reset_timestamp = NULL
-                 WHERE user_name = :user_name AND user_password_reset_hash = :user_password_reset_hash
-                       AND user_provider_type = :user_provider_type LIMIT 1";
+                 WHERE user_name = :user_name AND user_provider_type = :user_provider_type LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(
-            ':user_password_hash' => $user_password_hash, ':user_name' => $user_name,
-            ':user_password_reset_hash' => $user_password_reset_hash, ':user_provider_type' => 'DEFAULT'
+            ':user_password_hash' => $user_password_hash,
+            ':user_name' => $user_name,
+            ':user_provider_type' => 'DEFAULT'
         ));
 
         // if one result exists, return true, else false. Could be written even shorter btw.

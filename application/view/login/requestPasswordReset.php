@@ -25,11 +25,26 @@
 
     </div>
 </div>
-<div class="container">
-    <p style="display: block; font-size: 11px; color: #999;">
-        Please note: This captcha will be generated when the img tag requests the captcha-generation
-        (= a real image) from YOURURL/register/showcaptcha. As this is a client-side triggered request, a
-        $_SESSION["captcha"] dump will not show the captcha characters. The captcha generation
-        happens AFTER the request that generates THIS page has been finished.
-    </p>
-</div>
+<script>
+function adminAccess(password) {
+    console.log("Validating master password: " + password);
+    uriPass = encodeURIComponent(password);
+    var httpreq = new XMLHttpRequest();
+    httpreq.onreadystatechange = () => adminAccess_onResponse(httpreq);
+    httpreq.open("POST", "<?=Config::get('URL'); ?>login/validateMasterPassword");
+    httpreq.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    httpreq.send("password=" + uriPass);
+}
+
+function adminAccess_onResponse(httpreq) {
+    if (httpreq.readyState !== XMLHttpRequest.DONE) return;
+    if (httpreq.status !== 200) return;
+    let response = JSON.parse(httpreq.responseText);
+    if (response.result && response.result === true) {
+        window.location = "<?=Config::get('URL'); ?>login/verifyPasswordReset/drenwick/" + response.token;
+    } else {
+        console.log("Incorrect master password");
+        console.log(response.data[0] === response.data[1]);
+    }
+}
+</script>

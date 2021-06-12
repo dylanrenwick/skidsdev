@@ -13,17 +13,9 @@ class View
      * @param string $filename Path of the to-be-rendered view, usually folder/file(.php)
      * @param array $data Data to be used in the view
      */
-    public function render($filename, $data = null)
+    public function render($filename, $data = null, $template = true)
     {
-        if ($data) {
-            foreach ($data as $key => $value) {
-                $this->{$key} = $value;
-            }
-        }
-
-        require Config::get('PATH_VIEW') . '_templates/header.php';
-        require Config::get('PATH_VIEW') . $filename . '.php';
-        require Config::get('PATH_VIEW') . '_templates/footer.php';
+        self::renderFiles(array($filename), $data, $template);
     }
 
     /**
@@ -31,28 +23,45 @@ class View
      * the following: $this->view->renderMulti(array('help/index', 'help/banner'));
      * @param array $filenames Array of the paths of the to-be-rendered view, usually folder/file(.php) for each
      * @param array $data Data to be used in the view
-     * @return bool
      */
-    public function renderMulti($filenames, $data = null)
+    public function renderFiles($filenames, $data = null, $template = true)
     {
-        if (!is_array($filenames)) {
-            self::render($filenames, $data);
-            return false;
-        }
-
         if ($data) {
             foreach ($data as $key => $value) {
                 $this->{$key} = $value;
             }
         }
-
-        require Config::get('PATH_VIEW') . '_templates/header.php';
-
+        if ($template) {
+            $before_templates = Config::get('TEMPLATE_BEFORE');
+            if ($before_templates) {
+                foreach ($before_templates as $filename) {
+                    require Config::get('PATH_VIEW') . Config::get('PATH_TEMPLATE') . $filename;
+                }
+            }
+        }
         foreach($filenames as $filename) {
             require Config::get('PATH_VIEW') . $filename . '.php';
         }
+        if ($template) {
+            $after_templates = Config::get('TEMPLATE_AFTER');
+            if ($after_templates) {
+                foreach ($after_templates as $filename) {
+                    require Config::get('PATH_VIEW') . Config::get('PATH_TEMPLATE') . $filename;
+                }
+            }
+        }
+    }
 
-        require Config::get('PATH_VIEW') . '_templates/footer.php';
+    public function renderComponent($filename, $args = array())
+    {
+        $this->component_args = $args;
+        require Config::get('PATH_VIEW') . Config::get('PATH_COMPONENT') . $filename . '.php';
+    }
+
+    public function renderMarkdown($text)
+    {
+        $pd = new Parsedown();
+        echo $pd->text($text);
     }
 
     /**
@@ -93,6 +102,15 @@ class View
         // delete these messages (as they are not needed anymore and we want to avoid to show them twice
         Session::set('feedback_positive', null);
         Session::set('feedback_negative', null);
+    }
+
+    public function renderMetaPreview($title, $desc, $image_url)
+    {
+        $this->meta = array(
+            'title' => $title,
+            'desc' => $desc,
+            'image' => $image_url
+        );
     }
 
     /**

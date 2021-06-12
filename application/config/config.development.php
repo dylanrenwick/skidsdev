@@ -28,18 +28,45 @@ ini_set('session.cookie_httponly', 1);
  * This is used by the core/Config class.
  */
 return array(
+    'ALLOW_REGISTER' => 'OAUTH',
+    'OAUTH_PROVIDERS' => array(
+        'discord',
+        //'google',
+        //'github',
+    ),
+    'OAUTH_SETTINGS' => array(
+        'discord' => array(
+            'clientId' => '821777171420413993',
+            'clientSecret' => 'CWlJP9ATeQrXUtjgKm7J2upGRvn7Zt59'
+        ),
+        'github' => array(
+            'clientId' => '821777171420413993',
+            'clientSecret' => 'CWlJP9ATeQrXUtjgKm7J2upGRvn7Zt59'
+        ),
+    ),
+    'OAUTH_OPTIONS' => array(
+        'discord' => array(
+            'scope' => array('email', 'identify')
+        )
+    ),
     /**
      * Configuration for: Base URL
      * This detects your URL/IP incl. sub-folder automatically. You can also deactivate auto-detection and provide the
      * URL manually. This should then look like 'http://192.168.33.44/' ! Note the slash in the end.
      */
-    'URL' => 'http://' . $_SERVER['HTTP_HOST'] . str_replace('public', '', dirname($_SERVER['SCRIPT_NAME'])),
+    'URL' => 'https://' . $_SERVER['HTTP_HOST'] . str_replace('public', '', dirname($_SERVER['SCRIPT_NAME'])),
+    'NAME' => 'Skidsdev',
     /**
      * Configuration for: Folders
      * Usually there's no reason to change this.
      */
     'PATH_CONTROLLER' => realpath(dirname(__FILE__).'/../../') . '/application/controller/',
     'PATH_VIEW' => realpath(dirname(__FILE__).'/../../') . '/application/view/',
+    'PATH_TEMPLATE' => '_templates/',
+    'PATH_COMPONENT' => '_components/',
+
+    'TEMPLATE_BEFORE' => array('header.php'),
+    'TEMPLATE_AFTER' => array('footer.php'),
     /**
      * Configuration for: Avatar paths
      * Internal path to save avatars. Make sure this folder is writable. The slash at the end is VERY important!
@@ -64,8 +91,8 @@ return array(
     'DB_TYPE' => 'mysql',
     'DB_HOST' => '127.0.0.1',
     'DB_NAME' => 'huge',
-    'DB_USER' => 'root',
-    'DB_PASS' => '12345678',
+    'DB_USER' => 'huge',
+    'DB_PASS' => 'MyRhinoWillDevourYourHippopotamus',
     'DB_PORT' => '3306',
     'DB_CHARSET' => 'utf8',
     /**
