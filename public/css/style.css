@@ -671,3 +671,13 @@ input {
     margin-bottom: 10px;
     border-radius: 5px;
 }
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}

@@ -5,40 +5,37 @@
         <!-- echo out the system feedback (error and success messages) -->
         <?php $this->renderFeedbackMessages(); ?>
 
-        <h3>What happens here ?</h3>
-        <div>
-            This controller/action/view shows a list of all users in the system. You could use the underlying code to
-            build things that use profile information of one or multiple/all users.
-        </div>
-        <div>
-            <table class="overview-table">
-                <thead>
-                <tr>
-                    <td>Id</td>
-                    <td>Avatar</td>
-                    <td>Username</td>
-                    <td>User's email</td>
-                    <td>Activated ?</td>
-                    <td>Link to user's profile</td>
-                </tr>
-                </thead>
-                <?php foreach ($this->users as $user) { ?>
-                    <tr class="<?= ($user->user_active == 0 ? 'inactive' : 'active'); ?>">
-                        <td><?= $user->user_id; ?></td>
-                        <td class="avatar">
-                            <?php if (isset($user->user_avatar_link)) { ?>
-                                <img src="<?= $user->user_avatar_link; ?>" />
-                            <?php } ?>
-                        </td>
-                        <td><?= $user->user_name; ?></td>
-                        <td><?= $user->user_email; ?></td>
-                        <td><?= ($user->user_active == 0 ? 'No' : 'Yes'); ?></td>
-                        <td>
-                            <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>">Profile</a>
-                        </td>
-                    </tr>
-                <?php } ?>
-            </table>
+        <h3>Profile of <?=$this->user['user_name']?></h3>
+        <div class="flex-col">
+            <?php if (Session::get("user_account_type") == 7) : ?>
+                <div class="flex-row">
+                    <label style="flex-grow:1;">User ID</label>
+                    <input
+                        style="flex-grow:1;"
+                        type="number"
+                        value=<?=$this->user['user_id']?>
+                        disabled
+                    />
+                </div>
+            <?php endif; ?>
+            <div class="flex-row">
+                <label style="flex-grow:1;">Username</label>
+                <input
+                    style="flex-grow:1;"
+                    type="number"
+                    value=<?=$this->user['user_name']?>
+                    disabled
+                />
+            </div>
+            <div class="flex-row">
+                <label style="flex-grow:1;">Email</label>
+                <input
+                    style="flex-grow:1;"
+                    type="number"
+                    value=<?=$this->user['user_email']?>
+                    disabled
+                />
+            </div>
         </div>
     </div>
 </div>
