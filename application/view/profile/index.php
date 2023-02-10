@@ -5,7 +5,7 @@
         <!-- echo out the system feedback (error and success messages) -->
         <?php $this->renderFeedbackMessages(); ?>
 
-        <h3>Profile of <?=$this->user['user_name']?></h3>
+        <h3>Profile of <?=$this->user->user_name?></h3>
         <div class="flex-col">
             <?php if (Session::get("user_account_type") == 7) : ?>
                 <div class="flex-row">
@@ -13,7 +13,7 @@
                     <input
                         style="flex-grow:1;"
                         type="number"
-                        value=<?=$this->user['user_id']?>
+                        value=<?=$this->user->user_id?>
                         disabled
                     />
                 </div>
@@ -23,7 +23,7 @@
                 <input
                     style="flex-grow:1;"
                     type="number"
-                    value=<?=$this->user['user_name']?>
+                    value=<?=$this->user->user_name?>
                     disabled
                 />
             </div>
@@ -32,7 +32,7 @@
                 <input
                     style="flex-grow:1;"
                     type="number"
-                    value=<?=$this->user['user_email']?>
+                    value=<?=$this->user->user_email?>
                     disabled
                 />
             </div>
