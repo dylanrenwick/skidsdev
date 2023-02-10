@@ -65,9 +65,6 @@
                     <a href="mailto:dylan.renwick96@gmail.com" target="_blank" title="email">
                         <i class="fas fa-envelope"></i>
                     </a>
-                    <a href="https://twitter.com/kaho_nes" target="_blank" title="twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
                     <a href="https://github.com/dylanrenwick" target="_blank" title="github">
                         <i class="fab fa-github"></i>
                     </a>
