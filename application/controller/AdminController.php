@@ -14,12 +14,17 @@ class AdminController extends Controller
         Auth::checkAdminAuthentication();
     }
 
+    public function index()
+    {
+        $this->View->render('admin/index');
+    }
+
     /**
      * This method controls what happens when you move to /admin or /admin/index in your app.
      */
-    public function index()
+    public function users()
     {
-        $this->View->render('admin/index', array(
+        $this->View->render('admin/users', array(
                 'users' => UserModel::getPublicProfilesOfAllUsers())
         );
     }
