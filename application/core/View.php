@@ -64,6 +64,11 @@ class View
         echo $pd->text($text);
     }
 
+    public function renderWikiPage($text)
+    {
+        echo WikiParser::parseWikiPage($text);
+    }
+
     /**
      * Same like render(), but does not include header and footer
      * @param string $filename Path of the to-be-rendered view, usually folder/file(.php)

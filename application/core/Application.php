@@ -37,6 +37,9 @@ class Application
             require Config::get('PATH_CONTROLLER') . Request::$controller_name . '.php';
             $this->controller = new Request::$controller_name();
 
+            $requestRoute = Request::$parameters;
+            $this->controller->requestRoute = $requestRoute;
+
             // check are controller and method existing and callable?
             if (is_callable(array($this->controller, Request::$action_name))) {
                 if (!empty(Request::$parameters)) {

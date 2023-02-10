@@ -3,6 +3,11 @@ var lastText = "";
 function onPreviewClick(e) {
     if (e !== undefined) event.preventDefault();
 
+    let title = document.getElementById('new-list-item-form')['post_title'];
+    if (title) {
+        document.getElementById('preview-title').innerText = title.value;
+    }
+
     let textArea = document.getElementById('new-list-item-form')['post_text'];
     if (textArea) {
         if (lastText === textArea.value) return;
