@@ -316,6 +316,33 @@ class UserModel
     }
 
     /**
+     * Gets the user's data
+     *
+     * @param $user_id
+     *
+     * @return mixed Returns false if user does not exist, returns object with user's data when user exists
+     */
+    public static function getUserDataByUserId($user_id)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = "SELECT user_id, user_name, user_email, user_password_hash, user_active,user_deleted, user_suspension_timestamp, user_account_type,
+                       user_failed_logins, user_last_failed_login
+                  FROM users
+                 WHERE user_id = :user_id
+                       AND user_provider_type = :provider_type
+                 LIMIT 1";
+        $query = $database->prepare($sql);
+
+        // DEFAULT is the marker for "normal" accounts (that have a password etc.)
+        // There are other types of accounts that don't have passwords etc. (FACEBOOK)
+        $query->execute(array(':user_id' => $user_id, ':provider_type' => 'DEFAULT'));
+
+        // return one row (we only have one result or nothing)
+        return $query->fetch();
+    }
+
+    /**
      * Gets the user's data by user's id and a token (used by login-via-cookie process)
      *
      * @param $user_id
