@@ -15,24 +15,35 @@ class CaptchaModel
      */
     public static function generateAndShowCaptcha()
     {
-        $a = rand(1,100);
-        $b = rand(1,100);
         $op = rand(0,3);
 
         switch($op) {
             case 0:
+                $a = rand(1,100);
+                $b = rand(1,100);
                 $result = $a + $b;
                 $op = '+';
                 break;
             case 1:
+                $a = rand(1,100);
+                $b = rand(1,100);
+                $low = min($a, $b);
+                $hi = max($a, $b);
+                $a = $hi;
+                $b = $low;
                 $result = $a - $b;
                 $op = '-';
                 break;
             case 2:
+                $a = rand(1,10);
+                $b = rand(1,10);
                 $result = $a * $b;
                 $op = 'x';
                 break;
             case 3:
+                $a = rand(1,10);
+                $b = rand(1,10);
+                $a = $a * $b;
                 $result = $a / $b;
                 $op = '/';
                 break;
