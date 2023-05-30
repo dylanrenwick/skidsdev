@@ -14,16 +14,25 @@ class PostModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        if ($showHidden) $whereClause = "t1.user_id = :user_id";
-        else $whereClause = "active = 1";
+        if ($showHidden) $whereClause = "post.user_id = :user_id";
+        else $whereClause = "post.active = 1";
 
         $sql = <<<SQL
-SELECT t1.id, t1.active, t1.created_at, t1.modified_at, t1.title, t1.text, t1.user_id, t2.user_name
-    FROM posts AS t1
-        INNER JOIN users AS t2 ON t1.user_id = t2.user_id
-    WHERE $whereClause
-    ORDER BY created_at DESC
-    LIMIT :offset,10
+SELECT
+    post.id,
+    post.active,
+    post.created_at,
+    post.modified_at,
+    post.title,
+    post.text,
+    post.user_id,
+    user.username
+FROM posts AS post
+    INNER JOIN users AS user
+        ON post.user_id = user.id
+WHERE $whereClause
+ORDER BY created_at DESC
+LIMIT :offset,10
 SQL;
         $query = $database->prepare($sql);
         $query->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -44,12 +53,22 @@ SQL;
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $sql = <<<SQL
-SELECT t1.id, t1.active, t1.created_at, t1.modified_at, t1.title, t1.text, t1.tags, t1.user_id, t2.user_name
-    FROM posts AS t1
-        INNER JOIN users AS t2 ON t1.user_id = t2.user_id
-    WHERE id = :post_id
-    ORDER BY created_at DESC
-    LIMIT 1
+SELECT
+    post.id,
+    post.active,
+    post.created_at,
+    post.modified_at,
+    post.title,
+    post.text,
+    post.tags,
+    post.user_id,
+    user.username
+FROM posts AS post
+    INNER JOIN users AS user
+        ON post.user_id = user.id
+WHERE id = :post_id
+ORDER BY created_at DESC
+LIMIT 1
 SQL;
         $query = $database->prepare($sql);
         $query->execute(array(':post_id' => $post_id));
