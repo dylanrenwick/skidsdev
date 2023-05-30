@@ -36,12 +36,12 @@ return array(
     ),
     'OAUTH_SETTINGS' => array(
         'discord' => array(
-            'clientId' => '821777171420413993',
-            'clientSecret' => 'CWlJP9ATeQrXUtjgKm7J2upGRvn7Zt59'
+            'clientId' => '12341234123412341234',
+            'clientSecret' => 'ThisIsSuperSecret123'
         ),
         'github' => array(
-            'clientId' => '821777171420413993',
-            'clientSecret' => 'CWlJP9ATeQrXUtjgKm7J2upGRvn7Zt59'
+            'clientId' => '12341234123412341234',
+            'clientSecret' => 'ThisIsSuperSecret123'
         ),
     ),
     'OAUTH_OPTIONS' => array(
@@ -92,7 +92,7 @@ return array(
     'DB_HOST' => '127.0.0.1',
     'DB_NAME' => 'huge',
     'DB_USER' => 'huge',
-    'DB_PASS' => 'MyRhinoWillDevourYourHippopotamus',
+    'DB_PASS' => 'ThisIsSuperSecret123',
     'DB_PORT' => '3306',
     'DB_CHARSET' => 'utf8',
     /**
