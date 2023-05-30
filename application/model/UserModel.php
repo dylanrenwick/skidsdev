@@ -299,7 +299,7 @@ class UserModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT id, username, email, password_hash, active,deleted, suspension_timestamp, account_type,
+        $sql = "SELECT id, username, email, password_hash, active, deleted, suspension_timestamp, account_type,
                        failed_logins, last_failed_login
                   FROM users
                  WHERE (username = :username OR email = :username)

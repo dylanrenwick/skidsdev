@@ -34,34 +34,34 @@ class LoginModel
         }
 
         // stop the user's login if account has been soft deleted
-        if ($result->user_deleted == 1) {
+        if ($result->deleted == 1) {
             Session::add('feedback_negative', Text::get('FEEDBACK_DELETED'));
             return false;
         }
 
         // stop the user from logging in if user has a suspension, display how long they have left in the feedback.
-        if ($result->user_suspension_timestamp != null && $result->user_suspension_timestamp - time() > 0) {
-            $suspensionTimer = Text::get('FEEDBACK_ACCOUNT_SUSPENDED') . round(abs($result->user_suspension_timestamp - time())/60/60, 2) . " hours left";
+        if ($result->suspension_timestamp != null && $result->suspension_timestamp - time() > 0) {
+            $suspensionTimer = Text::get('FEEDBACK_ACCOUNT_SUSPENDED') . round(abs($result->suspension_timestamp - time())/60/60, 2) . " hours left";
             Session::add('feedback_negative', $suspensionTimer);
             return false;
         }
 
         // reset the failed login counter for that user (if necessary)
         if ($result->user_last_failed_login > 0) {
-            self::resetFailedLoginCounterOfUser($result->user_name);
+            self::resetFailedLoginCounterOfUser($result->username);
         }
 
         // save timestamp of this login in the database line of that user
-        self::saveTimestampOfLoginOfUser($result->user_name);
+        self::saveTimestampOfLoginOfUser($result->username);
 
         // if user has checked the "remember me" checkbox, then write token into database and into cookie
         if ($set_remember_me_cookie) {
-            self::setRememberMeInDatabaseAndCookie($result->user_id);
+            self::setRememberMeInDatabaseAndCookie($result->id);
         }
 
         // successfully logged in, so we write all necessary data into the session and set "user_logged_in" to true
         self::setSuccessfulLoginIntoSession(
-            $result->user_id, $result->user_name, $result->user_email, $result->user_account_type
+            $result->id, $result->username, $result->email, $result->account_type
         );
 
         // return true to make clear the login was successful
@@ -104,20 +104,20 @@ class LoginModel
         }
 
         // block login attempt if somebody has already failed 3 times and the last login attempt is less than 30sec ago
-        if (($result->user_failed_logins >= 3) AND ($result->user_last_failed_login > (time() - 30))) {
+        if (($result->failed_logins >= 3) AND ($result->last_failed_login > (time() - 30))) {
             Session::add('feedback_negative', Text::get('FEEDBACK_PASSWORD_WRONG_3_TIMES'));
             return false;
         }
 
         // if hash of provided password does NOT match the hash in the database: +1 failed-login counter
-        if (!password_verify($user_password, $result->user_password_hash)) {
-            self::incrementFailedLoginCounterOfUser($result->user_name);
+        if (!password_verify($user_password, $result->password_hash)) {
+            self::incrementFailedLoginCounterOfUser($result->username);
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG'));
             return false;
         }
 
         // if user is not active (= has not verified account by verification mail)
-        if ($result->user_active != 1) {
+        if ($result->active != 1) {
             Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET'));
             return false;
         }
@@ -189,10 +189,10 @@ class LoginModel
         if ($result) {
 
             // successfully logged in, so we write all necessary data into the session and set "user_logged_in" to true
-            self::setSuccessfulLoginIntoSession($result->user_id, $result->user_name, $result->user_email, $result->user_account_type);
+            self::setSuccessfulLoginIntoSession($result->id, $result->username, $result->email, $result->account_type);
 
             // save timestamp of this login in the database line of that user
-            self::saveTimestampOfLoginOfUser($result->user_name);
+            self::saveTimestampOfLoginOfUser($result->username);
 
             // NOTE: we don't set another remember_me-cookie here as the current cookie should always
             // be invalid after a certain amount of time, so the user has to login with username/password
@@ -228,7 +228,7 @@ class LoginModel
      * @param $user_email
      * @param $user_account_type
      */
-    public static function setSuccessfulLoginIntoSession($user_id, $user_name, $user_email, $user_account_type)
+    public static function setSuccessfulLoginIntoSession($user_id, $username, $user_email, $user_account_type)
     {
         Session::init();
 
@@ -240,7 +240,7 @@ class LoginModel
         $_SESSION = array();
 
         Session::set('user_id', $user_id);
-        Session::set('user_name', $user_name);
+        Session::set('username', $username);
         Session::set('user_email', $user_email);
         Session::set('user_account_type', $user_account_type);
         Session::set('user_provider_type', 'DEFAULT');
@@ -268,16 +268,16 @@ class LoginModel
      *
      * @param $user_name
      */
-    public static function incrementFailedLoginCounterOfUser($user_name)
+    public static function incrementFailedLoginCounterOfUser($username)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $sql = "UPDATE users
-                   SET user_failed_logins = user_failed_logins+1, user_last_failed_login = :user_last_failed_login
-                 WHERE user_name = :user_name OR user_email = :user_name
+                   SET failed_logins = failed_logins+1, last_failed_login = :last_failed_login
+                 WHERE username = :name_or_email OR email = :name_or_email
                  LIMIT 1";
         $sth = $database->prepare($sql);
-        $sth->execute(array(':user_name' => $user_name, ':user_last_failed_login' => time() ));
+        $sth->execute(array(':name_or_email' => $username, ':last_failed_login' => time() ));
     }
 
     /**
@@ -285,16 +285,16 @@ class LoginModel
      *
      * @param $user_name
      */
-    public static function resetFailedLoginCounterOfUser($user_name)
+    public static function resetFailedLoginCounterOfUser($username)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $sql = "UPDATE users
-                   SET user_failed_logins = 0, user_last_failed_login = NULL
-                 WHERE user_name = :user_name AND user_failed_logins != 0
+                   SET failed_logins = 0, last_failed_login = NULL
+                 WHERE username = :username AND failed_logins != 0
                  LIMIT 1";
         $sth = $database->prepare($sql);
-        $sth->execute(array(':user_name' => $user_name));
+        $sth->execute(array(':username' => $username));
     }
 
     /**
@@ -303,14 +303,14 @@ class LoginModel
      *
      * @param $user_name
      */
-    public static function saveTimestampOfLoginOfUser($user_name)
+    public static function saveTimestampOfLoginOfUser($username)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "UPDATE users SET user_last_login_timestamp = :user_last_login_timestamp
-                WHERE user_name = :user_name LIMIT 1";
+        $sql = "UPDATE users SET last_login_timestamp = :last_login_timestamp
+                WHERE username = :username LIMIT 1";
         $sth = $database->prepare($sql);
-        $sth->execute(array(':user_name' => $user_name, ':user_last_login_timestamp' => time()));
+        $sth->execute(array(':username' => $username, ':last_login_timestamp' => time()));
     }
 
     /**
@@ -327,9 +327,9 @@ class LoginModel
         $random_token_string = hash('sha256', mt_rand());
 
         // write that token into database
-        $sql = "UPDATE users SET user_remember_me_token = :user_remember_me_token WHERE user_id = :user_id LIMIT 1";
+        $sql = "UPDATE users SET remember_me_token = :remember_me_token WHERE id = :user_id LIMIT 1";
         $sth = $database->prepare($sql);
-        $sth->execute(array(':user_remember_me_token' => $random_token_string, ':user_id' => $user_id));
+        $sth->execute(array(':remember_me_token' => $random_token_string, ':user_id' => $user_id));
 
         // generate cookie string that consists of user id, random string and combined hash of both
         // never expose the original user id, instead, encrypt it.
@@ -360,9 +360,9 @@ class LoginModel
 
             $database = DatabaseFactory::getFactory()->getConnection();
 
-            $sql = "UPDATE users SET user_remember_me_token = :user_remember_me_token WHERE user_id = :user_id LIMIT 1";
+            $sql = "UPDATE users SET remember_me_token = :remember_me_token WHERE id = :user_id LIMIT 1";
             $sth = $database->prepare($sql);
-            $sth->execute(array(':user_remember_me_token' => null, ':user_id' => $user_id));
+            $sth->execute(array(':remember_me_token' => null, ':user_id' => $user_id));
         }
 
         // delete remember_me cookie in browser
