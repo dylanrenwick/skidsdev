@@ -9,9 +9,34 @@
  */
 class Request
 {
-    public static $controller_name;
-    public static $action_name;
-    public static $parameters;
+    public string $controller;
+    public string $action;
+    public array $parameters;
+
+    public function __construct(?string $url)
+    {
+        if ($url !== null) {
+            // split URL
+            $url = trim($url, '/');
+            $url = filter_var($url, FILTER_SANITIZE_URL);
+            $url_parts = explode('/', $url);
+        } else {
+            $url_parts = [];
+        }
+
+        // put URL parts into according properties
+        $controller = isset($url_parts[0]) ? $url_parts[0] : Config::get('DEFAULT_CONTROLLER');
+        $this->controller = ucwords($controller) . 'Controller';
+        $this->action = isset($url_parts[1]) ? $url_parts[1] : Config::get('DEFAULT_ACTION');
+
+        // rebase array keys and store the URL parameters
+        $this->parameters = array_slice($url_parts, 2);
+    }
+
+    public function controller_file(): string
+    {
+        return $this->controller . '.php';
+    }
 
     /**
      * Gets/returns the value of a specific key of the POST super-global.
@@ -19,16 +44,17 @@ class Request
      * Request::post('x', true) then it will return a trimmed and stripped $_POST['x'] !
      *
      * @param mixed $key key
-     * @param bool $clean marker for optional cleaning of the var
      * @return mixed the key's value or nothing
      */
-    public static function post($key, $clean = false)
+    public static function post(string $key): ?string
     {
-        if (isset($_POST[$key])) {
-            // we use the Ternary Operator here which saves the if/else block
-            // @see http://davidwalsh.name/php-shorthand-if-else-ternary-operators
-            return ($clean) ? trim(strip_tags($_POST[$key])) : $_POST[$key];
-        }
+        return isset($_POST[$key]) ? $_POST[$key] : null;
+    }
+    
+    public static function postClean(string $key): ?string
+    {
+        $post_val = Request::post($key);
+        return ($val !== null) ? trim(strip_tags($post_val)) : $post_val;
     }
 
     /**
@@ -47,31 +73,9 @@ class Request
      * @param mixed $key key
      * @return mixed the key's value or nothing
      */
-    public static function get($key)
+    public static function get(string $key): ?string
     {
-        if (isset($_GET[$key])) {
-            return $_GET[$key];
-        }
-    }
-
-    public static function splitUrl()
-    {
-        if (isset($_GET['url'])) {
-            // split URL
-            $url = trim(Request::get('url'), '/');
-            $url = filter_var($url, FILTER_SANITIZE_URL);
-            $url = explode('/', $url);
-
-            // put URL parts into according properties
-            Request::$controller_name = isset($url[0]) ? $url[0] : null;
-            Request::$action_name = isset($url[1]) ? $url[1] : null;
-
-            // remove controller name and action name from the split URL
-            unset($url[0], $url[1]);
-
-            // rebase array keys and store the URL parameters
-            Request::$parameters = array_values($url);
-        }
+        return isset($_GET[$key]) ? $_GET[$key] : null;
     }
 
     /**
@@ -79,11 +83,9 @@ class Request
      * @param mixed $key key
      * @return mixed the key's value or nothing
      */
-    public static function cookie($key)
+    public static function cookie(string $key): ?string
     {
-        if (isset($_COOKIE[$key])) {
-            return $_COOKIE[$key];
-        }
+        return isset($_COOKIE[$key]) ? $_COOKIE[$key] : null;
     }
 
     public static function doNotTrack()

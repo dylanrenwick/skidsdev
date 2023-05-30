@@ -1,4 +1,5 @@
 <?php
+require_once Config::get('PATH_CONTROLLER') . 'ErrorController.php';
 
 /**
  * Class Application
@@ -7,16 +8,16 @@
 class Application
 {
     /** @var mixed Instance of the controller */
-    private $controller;
+    private Controller $controller;
 
     /** @var array URL parameters, will be passed to used controller-method */
-    private $parameters = array();
+    private array $parameters = array();
 
     /** @var string Just the name of the controller, useful for checks inside the view ("where am I ?") */
-    private $controller_name;
+    private string $controller_name;
 
     /** @var string Just the name of the controller's method, useful for checks inside the view ("where am I ?") */
-    private $action_name;
+    private string $action_name;
 
     /**
      * Start the application, analyze URL elements, call according controller/method or relocate to fallback location
@@ -24,62 +25,38 @@ class Application
     public function __construct()
     {
         // create array with URL parts in $url
-        Request::splitUrl();
-
-        // creates controller and action names (from URL input)
-        $this->createControllerAndActionNames();
+        $url = Request::get('url');
+        $req = new Request($url);
 
         // does such a controller exist ?
-        if (file_exists(Config::get('PATH_CONTROLLER') . Request::$controller_name . '.php')) {
+        $controller_path = Config::get('PATH_CONTROLLER') . $req->controller_file();
+        if (!file_exists($controller_path))
+            $this->getErrorController()->error404();
 
-            // load this file and create this controller
-            // example: if controller would be "car", then this line would translate into: $this->car = new car();
-            require Config::get('PATH_CONTROLLER') . Request::$controller_name . '.php';
-            $this->controller = new Request::$controller_name();
+        // load this file and create this controller
+        // example: if controller would be "car", then this line would translate into: $this->car = new car();
+        require $controller_path;
+        $this->controller = new $req->controller();
 
-            $requestRoute = Request::$parameters;
-            $this->controller->requestRoute = $requestRoute;
+        $requestRoute = $req->parameters;
+        $this->controller->requestRoute = $requestRoute;
 
-            // check are controller and method existing and callable?
-            if (is_callable(array($this->controller, Request::$action_name))) {
-                if (!empty(Request::$parameters)) {
-                    // call the method and pass arguments to it
-                    call_user_func_array(array($this->controller, Request::$action_name), Request::$parameters);
-                } else {
-                    // if no parameters are given, just call the method without parameters, like $this->index->index();
-                    $this->controller->{Request::$action_name}();
-                }
-            } else {
-                // load 404 error page
-                require Config::get('PATH_CONTROLLER') . 'ErrorController.php';
-                $this->controller = new ErrorController;
-                $this->controller->error404();
-            }
+        // check are controller and method existing and callable?
+        if (!is_callable(array($this->controller, $req->action)))
+            $this->getErrorController()->error404();
+
+        if (!empty($requestRoute)) {
+            // call the method and pass arguments to it
+            call_user_func_array(array($this->controller, $req->action), $requestRoute);
         } else {
-            // load 404 error page
-            require Config::get('PATH_CONTROLLER') . 'ErrorController.php';
-            $this->controller = new ErrorController;
-            $this->controller->error404();
+            // if no parameters are given, just call the method without parameters, like $this->index->index();
+            $this->controller->{$req->action}();
         }
     }
 
-    /**
-     * Checks if controller and action names are given. If not, default values are put into the properties.
-     * Also renames controller to usable name.
-     */
-    private function createControllerAndActionNames()
+    private function getErrorController(): ErrorController
     {
-        // check for controller: no controller given ? then make controller = default controller (from config)
-        if (!Request::$controller_name) {
-            Request::$controller_name = Config::get('DEFAULT_CONTROLLER');
-        }
-
-        // check for action: no action given ? then make action = default action (from config)
-        if (!Request::$action_name OR (strlen(Request::$action_name) == 0)) {
-            Request::$action_name = Config::get('DEFAULT_ACTION');
-        }
-
-        // rename controller name to real controller class/file name ("index" to "IndexController")
-        Request::$controller_name = ucwords(Request::$controller_name) . 'Controller';
+        $this->controller = new ErrorController();
+        return $this->controller;
     }
 }
