@@ -60,8 +60,8 @@
     <div id="sidebar">
         <div class="sidebar-head">
             <div class="sidebar-head-content">
-                <p class="sidebar-title animated zoomInLeft slower">Dylan Renwick</p>
-                <div class="sidebar-icons animated zoomInLeft slower">
+                <p class="sidebar-title animated zoomInLeft slow">Dylan Renwick</p>
+                <div class="sidebar-icons animated zoomInLeft slow">
                     <a href="mailto:dylan.renwick96@gmail.com" target="_blank" title="email">
                         <i class="fas fa-envelope"></i>
                     </a>
@@ -78,27 +78,27 @@
             <div class="sidebar-body-content">
                 <a href="<?=Config::get('URL');?>" class="sidebar-link 
                     <?= View::checkForActiveController($filename, "index") ? 'active-link' : ''; ?> 
-                    animated zoomInLeft slower">Home</a>
+                    animated zoomInLeft slow">Home</a>
                 <a href="<?=Config::get('URL');?>post" class="sidebar-link 
                     <?= View::checkForActiveController($filename, "post") ? 'active-link' : ''; ?> 
-                    animated zoomInLeft slower">Blog</a>
+                    animated zoomInLeft slow">Blog</a>
                 <?php if (Session::userIsLoggedIn()) : ?>
                     <?php if (Session::get("user_account_type") == 7) : ?>
                         <a href="<?=Config::get('URL');?>admin/" class="sidebar-link
                             <?= View::checkForActiveController($filename, "admin") ? 'active-link' : ''; ?>
-                            animated zoomInLeft slower">Admin</a>
+                            animated zoomInLeft slow">Admin</a>
                     <?php endif; ?>
                     <a href="<?=Config::get('URL');?>user" class="sidebar-link 
                         <?= View::checkForActiveController($filename, "user") ? 'active-link' : ''; ?> 
-                        animated zoomInLeft slower">My Account
+                        animated zoomInLeft slow">My Account
                     </a>
                     <a href="<?=Config::get('URL');?>login/logout?return=<?=urlencode(Request::get('url'))?>" class="sidebar-link
-                        animated zoomInLeft slower">Logout
+                        animated zoomInLeft slow">Logout
                     </a>
                 <?php else : ?>
                     <a href="<?=Config::get('URL');?>login" class="sidebar-link 
                         <?= View::checkForActiveController($filename, "login") ? 'active-link' : ''; ?> 
-                        animated zoomInLeft slower">Log In
+                        animated zoomInLeft slow">Log In
                     </a>
                 <?php endif; ?>
             </div>      
