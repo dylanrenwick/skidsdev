@@ -1,48 +1,9 @@
-var defaultBlob = {
-    score: 0,
-    cheatPower: 1000,
-    stats: {
-        clickCount: 0,
-        clickValue: 0,
-        scoreEarned: 0,
-        cheatPowerGained: 0,
-        autoclickerEarned: 0,
-        ticksPlayed: 0,
-    },
-    buildings: [
-        0, //scoreWell
-        0, //scorePrinter
-        0, //scoreMachine
-    ],
-    factionCoins: [
-        0, 0, 0,
-        0, 0, 0
-    ],
-    boughtUpgrades: [],
-    activeEffects: []
-};
-var blob = defaultBlob;
-
-var glob = {
-    created: false,
-    updateList: [],
-    upgrades: [],
-    cheats: [],
-    effects: [],
-    tps: 20,
-    spc: 1,
-    factionCoinChance: 10,
-    autoSaveCounter: 0,
-    autoSaveInterval: 5,
-    globalBuildingModifier: 1,
-    clickModifier: 1,
-    clickBonus: 0,
-    productionAsClick: 0,
-    maxCheatPower: 1000,
-    cheatPowerps: 1,
-    autoclickers: 0,
-    acFactionCoinChance: 2,
-    tick: {},
+const gameData = {
+	_game: {
+		screen: null,
+		ctx: null,
+	},
+	userData: {},
     buildings: {
         scoreWell: {
             id: 0,
@@ -76,21 +37,15 @@ var glob = {
             modifier: 1,
             name: "Leaderboard"
         },
+
         scoreMine: {
             id: 3,
             cost: 1800,
             costMult: 1.15,
             score: 65,
             modifier: 1,
+			faction: 1,
             name: "Score Mine"
-        },
-        scoreChapel: {
-            id: 3,
-            cost: 1800,
-            costMult: 1.15,
-            score: 65,
-            modifier: 1,
-            name: "Score Chapel"
         },
         scoreDrill: {
             id: 4,
@@ -98,15 +53,8 @@ var glob = {
             costMult: 1.15,
             score: 200,
             modifier: 1,
+			faction: 1,
             name: "Score Drill"
-        },
-        scoreChurch: {
-            id: 4,
-            cost: 5600,
-            costMult: 1.15,
-            score: 200,
-            modifier: 1,
-            name: "Score Church"
         },
         scoreQuarry: {
             id: 5,
@@ -114,15 +62,8 @@ var glob = {
             costMult: 1.15,
             score: 650,
             modifier: 1,
+			faction: 1,
             name: "Score Quarry"
-        },
-        scoreAbbey: {
-            id: 5,
-            cost: 38000,
-            costMult: 1.15,
-            score: 650,
-            modifier: 1,
-            name: "Score Abbey"
         },
         scoreRig: {
             id: 6,
@@ -130,15 +71,8 @@ var glob = {
             costMult: 1.15,
             score: 2000,
             modifier: 1,
+			faction: 1,
             name: "Score Rig"
-        },
-        scoreMonastery: {
-            id: 6,
-            cost: 442000,
-            costMult: 1.15,
-            score: 2000,
-            modifier: 1,
-            name: "Score Monastery"
         },
         scoreFoundry: {
             id: 7,
@@ -146,15 +80,8 @@ var glob = {
             costMult: 1.15,
             score: 8500,
             modifier: 1,
+			faction: 1,
             name: "Score Foundry"
-        },
-        scoreCathedral: {
-            id: 7,
-            cost: 7.3e6,
-            costMult: 1.15,
-            score: 8500,
-            modifier: 1,
-            name: "Score Cathedral"
         },
         scoreFactory: {
             id: 8,
@@ -162,15 +89,8 @@ var glob = {
             costMult: 1.15,
             score: 1e5,
             modifier: 1,
+			faction: 1,
             name: "Score Factory"
-        },
-        scoreParthenon: {
-            id: 8,
-            cost: 1.45e8,
-            costMult: 1.15,
-            score: 1e5,
-            modifier: 1,
-            name: "Score Parthenon"
         },
         scoreMegacorp: {
             id: 9,
@@ -178,7 +98,63 @@ var glob = {
             costMult: 1.15,
             score: 1.2e6,
             modifier: 1,
+			faction: 1,
             name: "Score Megacorp"
+        },
+
+        scoreChapel: {
+            id: 3,
+            cost: 1800,
+            costMult: 1.15,
+            score: 65,
+            modifier: 1,
+			faction: 2,
+            name: "Score Chapel"
+        },
+        scoreChurch: {
+            id: 4,
+            cost: 5600,
+            costMult: 1.15,
+            score: 200,
+            modifier: 1,
+			faction: 2,
+            name: "Score Church"
+        },
+        scoreAbbey: {
+            id: 5,
+            cost: 38000,
+            costMult: 1.15,
+            score: 650,
+            modifier: 1,
+			faction: 2,
+            name: "Score Abbey"
+        },
+        scoreMonastery: {
+            id: 6,
+            cost: 442000,
+            costMult: 1.15,
+            score: 2000,
+            modifier: 1,
+			faction: 2,
+            name: "Score Monastery"
+        },
+        scoreCathedral: {
+            id: 7,
+            cost: 7.3e6,
+            costMult: 1.15,
+            score: 8500,
+            modifier: 1,
+			faction: 2,
+            name: "Score Cathedral"
+        },
+        scoreParthenon: {
+            id: 8,
+            cost: 1.45e8,
+            costMult: 1.15,
+            score: 1e5,
+            modifier: 1,
+			faction: 2,
+            name: "Score Parthenon"
         },
         scoreVatican: {
             id: 9,
@@ -186,32 +162,56 @@ var glob = {
             costMult: 1.15,
             score: 1.2e6,
             modifier: 1,
+			faction: 2,
             name: "Score Vatican"
         }
     }
 };
+const defaultUserData = {
+    score: 0,
+    cheatPower: 1000,
+    stats: {
+        clickCount: 0,
+        clickValue: 0,
+        scoreEarned: 0,
+        cheatPowerGained: 0,
+        autoclickerEarned: 0,
+        ticksPlayed: 0,
+    },
+    buildings: [
+        0, //scoreWell
+        0, //scorePrinter
+        0, //scoreMachine
+    ],
+    factionCoins: [
+        0, 0, 0,
+        0, 0, 0
+    ],
+    boughtUpgrades: [],
+    activeEffects: []
+};
 
-var factionBuildings = [
-    [
-        glob.buildings.scoreChapel,
-        glob.buildings.scoreChurch,
-        glob.buildings.scoreAbbey,
-        glob.buildings.scoreMonastery,
-        glob.buildings.scoreCathedral,
-        glob.buildings.scoreParthenon,
-        glob.buildings.scoreVatican
-    ],
-    [
-        glob.buildings.scoreMine,
-        glob.buildings.scoreDrill,
-        glob.buildings.scoreQuarry,
-        glob.buildings.scoreRig,
-        glob.buildings.scoreFoundry,
-        glob.buildings.scoreFactory,
-        glob.buildings.scoreMegacorp
-    ],
-    []
-];
+var glob = {
+    created: false,
+    updateList: [],
+    upgrades: [],
+    cheats: [],
+    effects: [],
+    tps: 20,
+    spc: 1,
+    factionCoinChance: 10,
+    autoSaveCounter: 0,
+    autoSaveInterval: 5,
+    globalBuildingModifier: 1,
+    clickModifier: 1,
+    clickBonus: 0,
+    productionAsClick: 0,
+    maxCheatPower: 1000,
+    cheatPowerps: 1,
+    autoclickers: 0,
+    acFactionCoinChance: 2,
+    tick: {},
+};
 
 var factionUpgrades = [
     ["ScoreReligion", 78],
@@ -226,133 +226,25 @@ var subFactionUpgrades = [
     ["StartupContract", 398],
 ]
 
-function update() {
-    _update.bind(blob)();
-}
-function _update () {
-    let start = Date.now();
-    if (this.created !== false) {
-        let toRemove = [];
-        for (let e of blob.activeEffects) {
-            let element = document.getElementById(e.element);
-            if (!element) continue;
-            let bars = element.getElementsByClassName("barFill");
-            if (!bars) continue;
-            let bar = bars[0];
-
-            e.duration -= 1 / glob.tps;
-            if (e.duration <= 0) {
-                glob.effects[e.id].offEffect();
-                bar.parentElement.parentElement.remove();
-                toRemove.push(e);
-            } else {
-                let amt = e.duration / glob.effects[e.id].duration * 200;
-                bar.style.width = amt + "px";
-            }
-        }
-        toRemove.forEach(x => blob.activeEffects.splice(blob.activeEffects.indexOf(x), 1));
-
-        glob.cheatPowerBar.style.width = (blob.cheatPower / blob.maxCheatPower * 300) + "px";
-        glob.cheatPowerText.innerText = `Cheat Power: ${beautifyNumber(Math.floor(blob.cheatPower))}/${beautifyNumber(Math.floor(glob.maxCheatPower))} : ${beautifyNumber(glob.cheatPowerps, 3).split("").reverse().join("").substring(1).split("").reverse().join("")}/s`;
-
-        glob.tick.clickBonus = 0;
-        glob.tick.clickModifier = 1;
-        glob.tick.cheatPowerBonus = 0;
-        glob.tick.globalProductionModifier = 1;
-        glob.tick.autoclickerBonus = 0;
-
-        for (let u of glob.updateList) u();
-        for (let c of glob.upgrades) {
-            if (blob.boughtUpgrades.includes(c.id)) {
-                c.pred();
-                glob.upgrades.splice(glob.upgrades.indexOf(c), 1);
-            } else if (c.cond() === true) {
-                glob.upgradeGrid.appendChild(createUpgrade(c));
-                glob.upgrades.splice(glob.upgrades.indexOf(c), 1);
-            }
-        }
-        for (let c of glob.cheats) {
-            if (c.cond() === true) {
-                glob.cheatList.appendChild(createCheat(c));
-                glob.cheats.splice(glob.cheats.indexOf(c), 1);
-            }
-        }
-
-        if (blob.cheatPower < glob.maxCheatPower) {
-            let diff = glob.maxCheatPower - blob.cheatPower;
-            let cppt = (glob.cheatPowerps + glob.tick.cheatPowerBonus) / glob.tps;
-            let amount = (diff > cppt ? cppt : diff)
-            blob.cheatPower += amount;
-            blob.stats.cheatPowerGained += amount;
-        }
-        if (blob.cheatPower > glob.maxCheatPower) blob.cheatPower = glob.maxCheatPower;
-
-        let sps = 0;
-        for (let b in glob.buildings) {
-            if (!glob.buildings.hasOwnProperty(b)) continue;
-            let build = glob.buildings[b];
-            if (this.buildings[build.id] === undefined) continue;
-            let count = this.buildings[build.id];
-            if (build.id === 10) count *= blob.unlockedTrophies.length;
-            let bSps = build.score * count * build.modifier * glob.globalBuildingModifier * glob.tick.globalProductionModifier
-            let bSpt = bSps / glob.tps;
-            this.score += bSpt;
-            this.stats.scoreEarned += bSpt
-            sps += bSps;
-        }
-        glob.sps = sps;
-
-        let power = glob.spc + (glob.productionAsClick * glob.sps);
-        power += glob.tick.clickBonus;
-        power *= glob.clickModifier;
-        power *= glob.tick.clickModifier;
-
-        let acCount = glob.autoclickers + glob.tick.autoclickerBonus;
-
-        let autoclickerValue = (acCount * power / 20) / glob.tps;
-        blob.score += autoclickerValue;
-        blob.stats.scoreEarned += autoclickerValue;
-        blob.stats.autoclickerEarned += autoclickerValue;
-        glob.sps += acCount * power / 20;
-
-        let displayScore = beautifyNumber(Math.floor(this.score));
-        glob.scoreText.innerText = `Score: ${displayScore}`;
-        glob.spsText.innerText = `Score/s: ${beautifyNumber(glob.sps)}`;
-        glob.acText.innerText = `Autoclickers: ${beautifyNumber(acCount)}`;
-    }
-    blob.stats.ticksPlayed += 1;
-    if (blob.stats.ticksPlayed % glob.tps) onSecond();
-    glob.autoSaveCounter++;
-    if (glob.autoSaveCounter / glob.tps >= glob.autoSaveInterval) {
-        save();
-        glob.autoSaveCounter = 0;
-    }
-
-    let time = 1000 / glob.tps - (Date.now() - start);
-    if (time > 0) glob.updateLoop = setTimeout(update, time);
-    else update();
-}
-function onSecond() {
-    let acCount = glob.autoclickers + glob.tick.autoclickerBonus;
-    for (let i = 0; i < acCount; i++) {
-        let chanceToken = Math.random() * 100;
-        let count = (glob.acFactionCoinChance / 100) + (chanceToken <= glob.acFactionCoinChance % 100 ? 1 : 0);
-        if (count > 0) {
-            let faction = randInt(0, 5);
-            blob.factionCoins[faction] += count;
-        }
-    }
-}
-
 function init() {
-    glob.screen = document.getElementById("gameScreen");
-    if (glob.screen === undefined) {
+    gameData._game.screen = document.getElementById("gameScreen");
+    if (gameData._game.screen === undefined) {
         throw new Error("Could not get game screen");
-        return;
     }
 
-    load();
-    createGame();
+	gameData._game.ctx = gameData._game.screen.getContext("2d");
+	if (gameData._game.ctx === undefined) {
+		throw new Error("Could not get game screen render context");
+	}
+	
+    if (!load())
+	{
+		gameData.userData = defaultUserData;
+		save();
+	}
+
+	createGame();
+	return;
     
     let toRemove = [];
     for (let c of glob.upgrades) {
@@ -385,65 +277,288 @@ function init() {
 
 window.addEventListener("load", init);
 
-function save() {
-    let storage = window.localStorage;
-    let data = btoa(JSON.stringify(blob));
-    storage.setItem("clickScoreSave", data);
-    console.log("Saved!");
-}
-function load() {
-    let storage = window.localStorage;
-    let data = storage.getItem("clickScoreSave");
-    if (data !== null) {
-        try {
-            newBlob = JSON.parse(atob(data));
-            newBlob = recursiveConvert(newBlob);
-            for (let i in newBlob.boughtUpgrades) {
-                newBlob.boughtUpgrades[i] = Number(newBlob.boughtUpgrades[i]);
-            }
-            newBlob = addMissingFields(newBlob, blob);
-            blob = newBlob;
-            console.log(blob);
-            console.log("Loaded");
-        } catch (e) {
-            console.error(e);
-        }
-    }
-}
-function recursiveConvert(obj) {
-    for (let key in obj) {
-        if (!obj.hasOwnProperty(key)) continue;
-        if (typeof(obj[key]) === "object") obj[key] = recursiveConvert(obj[key]);
-        else if (typeof(obj[key]) === "number" && !obj[key].toString().includes('.')) obj[key] = obj[key];
-        else if (typeof(obj[key]) === "string" && /^\d+n$/.test(obj[key])) obj[key] = obj[key].substring(obj[key].length - 1, -1);
-    }
-    return obj;
-}
-function addMissingFields(target, source) {
-    for (let key in source) {
-        if (!source.hasOwnProperty(key)) continue;
-        if (!target.hasOwnProperty(key) || target[key] === undefined || target[key] === null) target[key] = source[key];
-        else if (typeof(source[key]) === "number" && typeof(target[key]) === "bigint") target[key] = number(target[key]);
-        else if (typeof(source[key]) === "number" && typeof(target[key]) === "string") target[key] = parseInt(target[key]);
-        else if (typeof(source[key]) === "object" && typeof(target[key]) === "object") target[key] = addMissingFields(target[key], source[key]);
-        else if (typeof(source[key]) !== typeof(target[key])) target[key] = source[key];
-    }
-    return target;
-}
-function wipeSave() {
-    let storage = window.localStorage;
-    storage.removeItem("clickScoreSave");
-    blob = defaultBlob;
+class Point {
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+	}
 
-    window.location.reload();
+	add(other) {
+		return new Point(this.x + other.x, this.y + other.y);
+	}
+	sub(other) {
+		return new Point(this.x - other.x, this.y - other.y);
+	}
+}
+class Rectangle {
+	constructor(pos, size) {
+		this.pos = pos;
+		this.size = size;
+	}
+
+	split(splitType, splitAmt, padding = 0) {
+		return splitType === SplitPanelRenderNode.SPLIT_HORIZONTAL
+			? [
+				new Rectangle(this.pos, new Point(this.size.x, this.size.y * splitAmt)).pad(padding),
+				new Rectangle(this.pos.add(new Point(0, this.size.y * splitAmt)), new Point(this.size.x, this.size.y * (1 - splitAmt))).pad(padding)
+			]
+			: [
+				new Rectangle(this.pos, new Point(this.size.x * splitAmt, this.size.y)).pad(padding),
+				new Rectangle(this.pos.add(new Point(this.size.x * splitAmt, 0)), new Point(this.size.x * (1 - splitAmt), this.size.y)).pad(padding)
+			];
+	}
+
+	pad(padding) {
+		return new Rectangle(
+			this.pos.add(new Point(padding, padding)),
+			this.size.add(new Point(-2 * padding, -2 * padding))
+		);
+	}
+
+	inBounds(point) {
+		return point && point.x >= this.pos.x && point.y >= this.pos.y && point.x < this.pos.x + this.size.x && point.y < this.pos.y + this.size.y;
+	}
+}
+
+class RenderStyle {
+	fillStyle;
+	strokeStyle;
+	lineWidth;
+
+	hoverStyle;
+
+	padding;
+	borderRadius;
+
+	with(pred) {
+		pred(this);
+		return this;
+	}
+}
+class RenderNode {
+	_onMouseMove;
+	set onMouseMove(newOnMouseMove) { this._onMouseMove = newOnMouseMove; }
+	get onMouseMove() { return e => {
+		if (this._onMouseMove) this._onMouseMove(e);
+		for (let child of this.getChildRects(e.rect)) {
+			let evnt = e.resize(child.rect);
+			if (evnt.inBounds)
+				child.child.onMouseMove(evnt);
+			if (evnt.entered)
+				child.child.onMouseEnter(evnt);
+			if (evnt.exited)
+				child.child.onMouseExit(evnt);
+		}
+	}}
+	_onMouseDown;
+	set onMouseDown(newOnMouseDown) { this._onMouseDown = newOnMouseDown; }
+	get onMouseDown() { return e => this.propagateEvent(e, "MouseDown"); }
+	_onMouseUp;
+	set onMouseUp(newOnMouseUp) { this._onMouseUp = newOnMouseUp; }
+	get onMouseUp() { return e => this.propagateEvent(e, "MouseUp"); }
+	_onMouseEnter;
+	set onMouseEnter(newOnMouseEnter) { this._onMouseEnter = newOnMouseEnter; }
+	get onMouseEnter() { return e => { if (this._onMouseEnter) this._onMouseEnter(e); } }
+	_onMouseExit;
+	set onMouseExit(newOnMouseExit) {this._onMouseExit = newOnMouseExit; }
+	get onMouseExit() { return e => { if (this._onMouseExit) this._onMouseExit(e); } }
+
+	propagateEvent(e, eventName) {
+		if (this[`_on${eventName}`]) this[`_on${eventName}`](e);
+		for (let child of this.getChildRects(e.rect)) {
+			let evnt = e.resize(child.rect);
+			if (evnt.inBounds)
+				child.child[`on${eventName}`](evnt);
+		}
+	}
+
+	parent = undefined;
+	children = [];
+
+	constructor(children = [], style = new RenderStyle()) {
+		this.style = style;
+
+		for (let child of children) {
+			this.addChild(child);
+		}
+	}
+
+	addChild(child) {
+		this.children.push(child);
+		child.parent = this;
+	}
+	removeChild(child) {
+		this.children.removeItem(child);
+		child.parent = undefined;
+	}
+
+	get fillStyle() { return this.style.fillStyle; }
+	get strokeStyle() { return this.style.strokeStyle; }
+	
+	render(canvasRect) {
+		this.renderSelf(canvasRect);
+		this.renderChildren(canvasRect);
+	}
+	renderSelf(canvasRect) {
+		let shouldFill = false;
+		if (this.fillStyle) {
+			gameData._game.ctx.fillStyle = this.fillStyle;
+			shouldFill = true;
+		}
+		let shouldStroke = false;
+		if (this.strokeStyle) {
+			let weight = this.style.lineWidth || 1;
+			gameData._game.ctx.lineWidth = weight;
+			gameData._game.ctx.strokeStyle = this.strokeStyle;
+			shouldStroke = true;
+		}
+
+		if (shouldFill || shouldStroke) {
+			let rounding = this.style.borderRadius || 0;
+			gameData._game.ctx.beginPath();
+			gameData._game.ctx.roundRect(canvasRect.pos.x, canvasRect.pos.y, canvasRect.size.x, canvasRect.size.y, [rounding]);
+			if (shouldFill) gameData._game.ctx.fill();
+			if (shouldStroke) gameData._game.ctx.stroke();
+		}
+	}
+	renderChildren(canvasRect) {
+		for (let child of this.getChildRects(canvasRect)) {
+			child.child.render(child.rect);
+		}
+	}
+
+	getChildRects(canvasRect) {
+		return this.children.map(c => { return { child: c, rect: canvasRect }; });
+	}
+}
+class SplitPanelRenderNode extends RenderNode {
+	static SPLIT_HORIZONTAL = 0;
+	static SPLIT_VERTICAL = 1;
+
+	constructor(firstChild, secondChild, splitType, splitAmt, style) {
+		super([firstChild, secondChild], style);
+
+		this.splitType = splitType;
+		this.splitAmt = splitAmt;
+	}
+
+	getChildRects(canvasRect) {
+		let padding = this.style.padding || 0;
+		return canvasRect.split(this.splitType, this.splitAmt, padding)
+			.map((r, i) => { return { child: this.children[i], rect: r }; })
+	}
+}
+class ButtonRenderNode extends RenderNode {
+	constructor(style) {
+		super([], style);
+		this.isHovered = false;
+
+		this._onMouseMove = this.mouseMove;
+		this._onMouseEnter = this.mouseEnter;
+		this._onMouseExit = this.mouseExit;
+	}
+
+	get fillStyle() {
+		return this.isHovered
+			? this.style.hoverStyle
+			: this.style.fillStyle;
+	}
+
+	mouseEnter(e) {
+		this.isHovered = true;
+	}
+	mouseExit(e) {
+		this.isHovered = false;
+	}
+}
+
+class NodeMouseEvent {
+	get inBounds() {
+		return this.rect.inBounds(this.absPos);
+	}
+	get entered() {
+		return this.inBounds && !this.rect.inBounds(this.prevAbsPos);
+	}
+	get exited() {
+		return !this.inBounds && this.rect.inBounds(this.prevAbsPos);
+	}
+
+	get pos() {
+		return this.absPos.sub(this.rect.pos);
+	}
+	get absPos() {
+		return new Point(this.event.offsetX, this.event.offsetY);
+	}
+	get prevAbsPos() {
+		return this.prev ? new Point(this.prev.offsetX, this.prev.offsetY) : undefined;
+	}
+
+	get buttons() { return this.event.buttons; }
+	get altKey() { return this.event.altKey; }
+	get ctrlKey() { return this.event.ctrlKey; }
+	get metaKey() { return this.event.metaKey; }
+	get shiftKey() { return this.event.shiftKey; }
+
+	constructor(e, canvasRect, prev) {
+		this.event = e;
+		this.prev = prev;
+		this.rect = canvasRect;
+	}
+
+	resize(newRect) {
+		return new NodeMouseEvent(this.event, newRect, this.prev);
+	}
 }
 
 function createGame() {
+	gameData._game.canvasRect = new Rectangle(new Point(0, 0), new Point(gameData._game.screen.width, gameData._game.screen.height));
+
+	gameData._game.rootNode = new SplitPanelRenderNode(
+		new SplitPanelRenderNode(
+			new RenderNode([], new RenderStyle().with(s => s.fillStyle = "#444")),
+			new SplitPanelRenderNode(
+				new RenderNode(),
+				new ButtonRenderNode(new RenderStyle().with(s => {
+					s.fillStyle = "#333";
+					s.hoverStyle = "#777";
+					s.strokeStyle = "#111";
+					s.lineWidth = 2;
+					s.borderRadius = 10;
+				})),
+				SplitPanelRenderNode.SPLIT_HORIZONTAL, 0.8,
+				new RenderStyle().with(s => {
+					s.fillStyle = "#555";
+					s.padding = 15;
+				})
+			),
+			SplitPanelRenderNode.SPLIT_VERTICAL, 0.5
+		),
+		new RenderNode([], new RenderStyle().with(s => s.fillStyle = "#444")),
+		SplitPanelRenderNode.SPLIT_VERTICAL, 0.75
+	);
+
+	gameData._game.screen.addEventListener("mousemove", e => {
+		let evnt = new NodeMouseEvent(e, gameData._game.canvasRect, gameData._game.prevMouseEvent);
+		gameData._game.prevMouseEvent = e;
+		gameData._game.rootNode.onMouseMove(evnt);
+	});
+
+	let render = () => {
+		gameData._game.rootNode.render(gameData._game.canvasRect);
+		gameData._game.renderId = requestAnimationFrame(render);
+	};
+	gameData._game.renderId = requestAnimationFrame(render);
+	console.log(gameData._game.rootNode);
+	return;
+
+
     let bigButton = document.createElement("span");
     bigButton.id = "bigButton";
     bigButton.innerText = "Click";
     bigButton.onclick = onBigButtonClick;
     bigButton.classList.add("button");
+	bigButton.setAttribute("style",
+	`color:#333;`);
     glob.bigButton = bigButton;
 
     let statsBar = document.createElement("span");
@@ -657,6 +772,177 @@ function createGame() {
 
     glob.updateLoop = setTimeout(update, 1000 / glob.tps);
     glob.created = true;
+}
+
+function update() {
+    _update.bind(blob)();
+}
+function _update () {
+    let start = Date.now();
+    if (this.created !== false) {
+        let toRemove = [];
+        for (let e of blob.activeEffects) {
+            let element = document.getElementById(e.element);
+            if (!element) continue;
+            let bars = element.getElementsByClassName("barFill");
+            if (!bars) continue;
+            let bar = bars[0];
+
+            e.duration -= 1 / glob.tps;
+            if (e.duration <= 0) {
+                glob.effects[e.id].offEffect();
+                bar.parentElement.parentElement.remove();
+                toRemove.push(e);
+            } else {
+                let amt = e.duration / glob.effects[e.id].duration * 200;
+                bar.style.width = amt + "px";
+            }
+        }
+        toRemove.forEach(x => blob.activeEffects.splice(blob.activeEffects.indexOf(x), 1));
+
+        glob.cheatPowerBar.style.width = (blob.cheatPower / blob.maxCheatPower * 300) + "px";
+        glob.cheatPowerText.innerText = `Cheat Power: ${beautifyNumber(Math.floor(blob.cheatPower))}/${beautifyNumber(Math.floor(glob.maxCheatPower))} : ${beautifyNumber(glob.cheatPowerps, 3).split("").reverse().join("").substring(1).split("").reverse().join("")}/s`;
+
+        glob.tick.clickBonus = 0;
+        glob.tick.clickModifier = 1;
+        glob.tick.cheatPowerBonus = 0;
+        glob.tick.globalProductionModifier = 1;
+        glob.tick.autoclickerBonus = 0;
+
+        for (let u of glob.updateList) u();
+        for (let c of glob.upgrades) {
+            if (blob.boughtUpgrades.includes(c.id)) {
+                c.pred();
+                glob.upgrades.splice(glob.upgrades.indexOf(c), 1);
+            } else if (c.cond() === true) {
+                glob.upgradeGrid.appendChild(createUpgrade(c));
+                glob.upgrades.splice(glob.upgrades.indexOf(c), 1);
+            }
+        }
+        for (let c of glob.cheats) {
+            if (c.cond() === true) {
+                glob.cheatList.appendChild(createCheat(c));
+                glob.cheats.splice(glob.cheats.indexOf(c), 1);
+            }
+        }
+
+        if (blob.cheatPower < glob.maxCheatPower) {
+            let diff = glob.maxCheatPower - blob.cheatPower;
+            let cppt = (glob.cheatPowerps + glob.tick.cheatPowerBonus) / glob.tps;
+            let amount = (diff > cppt ? cppt : diff)
+            blob.cheatPower += amount;
+            blob.stats.cheatPowerGained += amount;
+        }
+        if (blob.cheatPower > glob.maxCheatPower) blob.cheatPower = glob.maxCheatPower;
+
+        let sps = 0;
+        for (let b in glob.buildings) {
+            if (!glob.buildings.hasOwnProperty(b)) continue;
+            let build = glob.buildings[b];
+            if (this.buildings[build.id] === undefined) continue;
+            let count = this.buildings[build.id];
+            if (build.id === 10) count *= blob.unlockedTrophies.length;
+            let bSps = build.score * count * build.modifier * glob.globalBuildingModifier * glob.tick.globalProductionModifier
+            let bSpt = bSps / glob.tps;
+            this.score += bSpt;
+            this.stats.scoreEarned += bSpt
+            sps += bSps;
+        }
+        glob.sps = sps;
+
+        let power = glob.spc + (glob.productionAsClick * glob.sps);
+        power += glob.tick.clickBonus;
+        power *= glob.clickModifier;
+        power *= glob.tick.clickModifier;
+
+        let acCount = glob.autoclickers + glob.tick.autoclickerBonus;
+
+        let autoclickerValue = (acCount * power / 20) / glob.tps;
+        blob.score += autoclickerValue;
+        blob.stats.scoreEarned += autoclickerValue;
+        blob.stats.autoclickerEarned += autoclickerValue;
+        glob.sps += acCount * power / 20;
+
+        let displayScore = beautifyNumber(Math.floor(this.score));
+        glob.scoreText.innerText = `Score: ${displayScore}`;
+        glob.spsText.innerText = `Score/s: ${beautifyNumber(glob.sps)}`;
+        glob.acText.innerText = `Autoclickers: ${beautifyNumber(acCount)}`;
+    }
+    blob.stats.ticksPlayed += 1;
+    if (blob.stats.ticksPlayed % glob.tps) onSecond();
+    glob.autoSaveCounter++;
+    if (glob.autoSaveCounter / glob.tps >= glob.autoSaveInterval) {
+        save();
+        glob.autoSaveCounter = 0;
+    }
+
+    let time = 1000 / glob.tps - (Date.now() - start);
+    if (time > 0) glob.updateLoop = setTimeout(update, time);
+    else update();
+}
+function onSecond() {
+    let acCount = glob.autoclickers + glob.tick.autoclickerBonus;
+    for (let i = 0; i < acCount; i++) {
+        let chanceToken = Math.random() * 100;
+        let count = (glob.acFactionCoinChance / 100) + (chanceToken <= glob.acFactionCoinChance % 100 ? 1 : 0);
+        if (count > 0) {
+            let faction = randInt(0, 5);
+            blob.factionCoins[faction] += count;
+        }
+    }
+}
+
+
+function save() {
+    let storage = window.localStorage;
+    let data = btoa(JSON.stringify(gameData.userData));
+    storage.setItem("clickScoreSave", data);
+    console.log("Saved!");
+}
+function load() {
+    let storage = window.localStorage;
+    let data = storage.getItem("clickScoreSave");
+    if (data !== null) {
+        try {
+            newUserData = JSON.parse(atob(data));
+            newUserData = recursiveConvert(newUserData);
+            newUserData = addMissingFields(newUserData, gameData.userData);
+			gameData.userData = newUserData;
+            console.log(newUserData);
+            console.log("Loaded");
+			return true;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+	return false;
+}
+function recursiveConvert(obj) {
+    for (let key in obj) {
+        if (!obj.hasOwnProperty(key)) continue;
+        if (typeof(obj[key]) === "object") obj[key] = recursiveConvert(obj[key]);
+        else if (typeof(obj[key]) === "number" && !obj[key].toString().includes('.')) obj[key] = obj[key];
+        else if (typeof(obj[key]) === "string" && /^\d+n$/.test(obj[key])) obj[key] = obj[key].substring(obj[key].length - 1, -1);
+    }
+    return obj;
+}
+function addMissingFields(target, source) {
+    for (let key in source) {
+        if (!source.hasOwnProperty(key)) continue;
+        if (!target.hasOwnProperty(key) || target[key] === undefined || target[key] === null) target[key] = source[key];
+        else if (typeof(source[key]) === "number" && typeof(target[key]) === "bigint") target[key] = number(target[key]);
+        else if (typeof(source[key]) === "number" && typeof(target[key]) === "string") target[key] = parseInt(target[key]);
+        else if (typeof(source[key]) === "object" && typeof(target[key]) === "object") target[key] = addMissingFields(target[key], source[key]);
+        else if (typeof(source[key]) !== typeof(target[key])) target[key] = source[key];
+    }
+    return target;
+}
+function wipeSave() {
+    let storage = window.localStorage;
+    storage.removeItem("clickScoreSave");
+    blob = defaultBlob;
+
+    window.location.reload();
 }
 
 function createBuilding(building) {

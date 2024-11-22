@@ -71,7 +71,7 @@ span.tooltip {
     display: block;
 }
 </style>
-<div id="gameScreen"></div>
+<canvas id="gameScreen" width="900" height="667"></canvas>
 <span id="version" style="width:100%;display:block;text-align:right;">v0.7.0</span>
 <div id="info">
     <h2>F.A.Q.</h2>
