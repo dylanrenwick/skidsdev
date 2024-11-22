@@ -22,18 +22,18 @@
 class DatabaseFactory
 {
     private static DatabaseFactory $factory;
-    private Database $database;
+    private PDO $database;
 
     public static function getFactory(): DatabaseFactory
     {
-        if (!self::$factory) {
+        if (!isset(self::$factory)) {
             self::$factory = new DatabaseFactory();
         }
         return self::$factory;
     }
 
-    public function getConnection(): Database {
-        if (!$this->database) {
+    public function getConnection(): PDO {
+        if (!isset($this->database)) {
 
             /**
              * Check DB connection in try/catch block. Also when PDO is not constructed properly,
@@ -46,13 +46,8 @@ class DatabaseFactory
 					PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING
 				];
-                $this->database = new PDO(
-                   Config::get('DB_TYPE') . ':host=' . Config::get('DB_HOST') . ';dbname=' .
-                   Config::get('DB_NAME') . ';port=' . Config::get('DB_PORT') . ';charset=' . Config::get('DB_CHARSET'),
-                   Config::get('DB_USER'), Config::get('DB_PASS'), $options
-                );
-            } catch (PDOException $e) {
-
+				$this->database = self::createDatabase($options);
+			} catch (PDOException $e) {
                 // Echo custom message. Echo error code gives you some info.
                 echo 'Database connection can not be estabilished. Please try again later.' . '<br>';
                 echo 'Error code: ' . $e->getCode() . '<br>';
@@ -65,4 +60,23 @@ class DatabaseFactory
         }
         return $this->database;
     }
+
+	private static function createDatabase(array $options): PDO {
+		$dbType = Config::get('DB_TYPE');
+		switch ($dbType) {
+			case 'sqlite':
+				return new PDO(
+                   Config::get('DB_TYPE') . ':' . Config::get('DB_HOST'),
+                   null, null, $options
+                );
+			case 'mysql':
+				return new PDO(
+                   Config::get('DB_TYPE') . ':host=' . Config::get('DB_HOST') . ';dbname=' .
+                   Config::get('DB_NAME') . ';port=' . Config::get('DB_PORT') . ';charset=' . Config::get('DB_CHARSET'),
+                   Config::get('DB_USER'), Config::get('DB_PASS'), $options
+                );
+			default:
+				throw new Exception('Database type not supported');
+		}
+	}
 }
