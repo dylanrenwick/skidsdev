@@ -9,9 +9,9 @@
 class Controller
 {
     /** @var View View The view object */
-    public $View;
+    public View $View;
 
-    public $requestRoute = '';
+    public array $requestRoute = [];
 
     /**
      * Construct the (base) controller. This happens when a real controller is constructed, like in
