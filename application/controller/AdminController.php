@@ -14,7 +14,7 @@ class AdminController extends Controller
         Auth::checkAdminAuthentication();
     }
 
-    public function index()
+    public function index(): void
     {
         $this->View->render('admin/index');
     }
@@ -22,14 +22,14 @@ class AdminController extends Controller
     /**
      * This method controls what happens when you move to /admin or /admin/index in your app.
      */
-    public function users()
+    public function users(): void
     {
         $this->View->render('admin/users', array(
-                'users' => UserModel::getPublicProfilesOfAllUsers())
+			'users' => UserModel::getPublicProfilesOfAllUsers())
         );
     }
 
-    public function actionAccountSettings()
+    public function actionAccountSettings(): void
     {
         AdminModel::setAccountSuspensionAndDeletionStatus(
             Request::post('suspension'), Request::post('softDelete'), Request::post('user_id')

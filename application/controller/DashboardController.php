@@ -19,7 +19,7 @@ class DashboardController extends Controller
     /**
      * This method controls what happens when you move to /dashboard/index in your app.
      */
-    public function index()
+    public function index(): void
     {
         $this->View->render('dashboard/index');
     }
