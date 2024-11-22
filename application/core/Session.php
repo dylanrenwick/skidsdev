@@ -41,7 +41,7 @@ class Session
      * @param mixed $key Usually a string, right ?
      * @return mixed the key's value or nothing
      */
-    public static function get(mixed $key): ?mixed
+    public static function get(mixed $key): mixed
     {
         if (isset($_SESSION[$key])) {
             $value = $_SESSION[$key];
@@ -49,6 +49,8 @@ class Session
             // filter the value for XSS vulnerabilities
             return Filter::XSSFilter($value);
         }
+
+		return null;
     }
 
     /**
