@@ -3,11 +3,13 @@
 class Config
 {
     // this is public to allow better Unit Testing
-    public static $config;
+    public static array $config;
 
-    public static function get($key)
+	private static bool $isLoaded = false;
+
+    public static function get($key): mixed
     {
-        if (!self::$config) {
+        if (!self::$isLoaded) {
 
             $config_file = '../application/config/config.' . Environment::get() . '.php';
 
@@ -16,6 +18,7 @@ class Config
             }
 
             self::$config = require $config_file;
+			self::$isLoaded = true;
         }
 
         return self::$config[$key];
