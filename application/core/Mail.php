@@ -11,7 +11,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 class Mail
 {
     /** @var mixed variable to collect errors */
-    private $error;
+    private mixed $error;
 
     /**
      * Try to send a mail by using PHP's native mail() function.
@@ -21,7 +21,7 @@ class Mail
      * @see http://stackoverflow.com/a/24644450/1114320
      * @see http://www.php.net/manual/en/function.mail.php
      */
-    public function sendMailWithNativeMailFunction()
+    public function sendMailWithNativeMailFunction(): bool
     {
         // no code yet, so we just return something to make IDEs and code analyzer tools happy
         return false;
@@ -33,7 +33,7 @@ class Mail
      *
      * @return bool
      */
-    public function sendMailWithSwiftMailer()
+    public function sendMailWithSwiftMailer(): bool
     {
         // no code yet, so we just return something to make IDEs and code analyzer tools happy
         return false;
@@ -54,8 +54,13 @@ class Mail
      * @throws Exception
      * @throws phpmailerException
      */
-    public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body)
-    {
+	public function sendMailWithPHPMailer(
+		string $user_email,
+		string $from_email,
+		string $from_name,
+		string $subject,
+		string $body
+	): bool {
         $mail = new PHPMailer;
         
         // you should use UTF-8 to avoid encoding issues
@@ -122,10 +127,14 @@ class Mail
      * @param $body string full mail body text
      * @return bool the success status of the according mail sending method
      */
-    public function sendMail($user_email, $from_email, $from_name, $subject, $body)
-    {
+	public function sendMail(
+		string $user_email,
+		string $from_email,
+		string $from_name,
+		string $subject,
+		string $body
+	): bool {
         if (Config::get('EMAIL_USED_MAILER') == "phpmailer") {
-
             // returns true if successful, false if not
             return $this->sendMailWithPHPMailer(
                 $user_email, $from_email, $from_name, $subject, $body
@@ -147,7 +156,7 @@ class Mail
      *
      * @return mixed
      */
-    public function getError()
+    public function getError(): mixed
     {
         return $this->error;
     }

@@ -17,7 +17,7 @@ class Redirect
      *
      * @param $path string
      */
-    public static function toPreviousViewedPageAfterLogin($path)
+    public static function toPreviousViewedPageAfterLogin(string $path): void
     {
         header('location: http://' . $_SERVER['HTTP_HOST'] . '/' . $path);
     }
@@ -25,7 +25,7 @@ class Redirect
     /**
      * To the homepage
      */
-    public static function home()
+    public static function home(): void
     {
         header("location: " . Config::get('URL'));
     }
@@ -41,7 +41,7 @@ class Redirect
      *
      * @param $path string
      */
-    public static function to($path)
+    public static function to(string $path): void
     {
         header("location: " . Config::get('URL') . $path);
     }

@@ -11,7 +11,7 @@ class Session
     /**
      * starts the session
      */
-    public static function init()
+    public static function init(): void
     {
         // if no session exist, start the session
         if (session_id() == '') {
@@ -25,12 +25,12 @@ class Session
      * @param mixed $key key
      * @param mixed $value value
      */
-    public static function set($key, $value)
+    public static function set(mixed $key, mixed $value): void
     {
         $_SESSION[$key] = $value;
     }
 
-    public static function delete($key)
+    public static function delete(mixed $key): void
     {
         unset($_SESSION[$key]);
     }
@@ -41,7 +41,7 @@ class Session
      * @param mixed $key Usually a string, right ?
      * @return mixed the key's value or nothing
      */
-    public static function get($key)
+    public static function get(mixed $key): ?mixed
     {
         if (isset($_SESSION[$key])) {
             $value = $_SESSION[$key];
@@ -58,7 +58,7 @@ class Session
      * @param mixed $key
      * @param mixed $value
      */
-    public static function add($key, $value)
+    public static function add(string $key, string $value): void
     {
         $_SESSION[$key][] = $value;
     }
@@ -66,7 +66,7 @@ class Session
     /**
      * deletes the session (= logs the user out)
      */
-    public static function destroy()
+    public static function destroy(): void
     {
         session_destroy();
     }
@@ -79,7 +79,7 @@ class Session
      * @param  string $userId
      * @param  string $sessionId
      */
-    public static function updateSessionId($userId, $sessionId = null)
+    public static function updateSessionId(string $userId, ?string $sessionId = null): void
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "UPDATE users SET session_id = :session_id WHERE id = :user_id";
@@ -106,7 +106,7 @@ class Session
      * @see Session::updateSessionId()
      * @see http://stackoverflow.com/questions/6126285/php-stop-concurrent-user-logins
      */
-    public static function isConcurrentSessionExists()
+    public static function isConcurrentSessionExists(): bool
     {
         $session_id = session_id();
         $userId     = Session::get('user_id');
@@ -133,7 +133,7 @@ class Session
      *
      * @return bool user's login status
      */
-    public static function userIsLoggedIn()
+    public static function userIsLoggedIn(): bool
     {
         return (self::get('user_logged_in') ? true : false);
     }

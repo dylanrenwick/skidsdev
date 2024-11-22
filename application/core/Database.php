@@ -2,9 +2,9 @@
 
 class Database
 {
-    public static function query($sql, $data = array())
+    public static function query(string $sql, array $data = [])
     {
-        $exclude = array();
+        $exclude = [];
         foreach(array_keys($data) as $key) {
             if(preg_match("/$key/", $sql) !== 1) array_push($exclude, $key);
         }

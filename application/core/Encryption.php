@@ -12,14 +12,14 @@ class Encryption
      *
      * @var string
      */
-    const CIPHER = 'aes-256-cbc';
+    const string CIPHER = 'aes-256-cbc';
 
     /**
      * Hash function
      *
      * @var string
      */
-    const HASH_FUNCTION = 'sha256';
+    const string HASH_FUNCTION = 'sha256';
 
     /**
      * constructor for Encryption object.
@@ -39,7 +39,7 @@ class Encryption
      * @return string
      * @throws Exception If functions don't exists
      */
-    public static function encrypt($plain)
+    public static function encrypt(string $plain): string
     {
         if (!function_exists('openssl_cipher_iv_length') ||
             !function_exists('openssl_random_pseudo_bytes') ||
@@ -76,7 +76,7 @@ class Encryption
      * @return string
      * @throws Exception If $ciphertext is empty, or If functions don't exists
      */
-    public static function decrypt($ciphertext)
+    public static function decrypt(string $ciphertext): string
     {
         if (empty($ciphertext)) {
             throw new Exception('The String to decrypt can\'t be empty');
@@ -120,7 +120,7 @@ class Encryption
      * @return bool
      * @see https://github.com/sarciszewski/php-future/blob/bd6c91fb924b2b35a3e4f4074a642868bd051baf/src/Security.php#L36
      */
-    private static function hashEquals($hmac, $compare)
+    private static function hashEquals(string $hmac, string $compare): bool
     {
         if (function_exists('hash_equals')) {
             return hash_equals($hmac, $compare);

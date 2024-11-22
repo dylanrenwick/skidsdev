@@ -21,10 +21,10 @@
  */
 class DatabaseFactory
 {
-    private static $factory;
-    private $database;
+    private static DatabaseFactory $factory;
+    private Database $database;
 
-    public static function getFactory()
+    public static function getFactory(): DatabaseFactory
     {
         if (!self::$factory) {
             self::$factory = new DatabaseFactory();
@@ -32,7 +32,7 @@ class DatabaseFactory
         return self::$factory;
     }
 
-    public function getConnection() {
+    public function getConnection(): Database {
         if (!$this->database) {
 
             /**
@@ -42,7 +42,10 @@ class DatabaseFactory
              * by throwing custom error message
              */
             try {
-                $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
+				$options = [
+					PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+					PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING
+				];
                 $this->database = new PDO(
                    Config::get('DB_TYPE') . ':host=' . Config::get('DB_HOST') . ';dbname=' .
                    Config::get('DB_NAME') . ';port=' . Config::get('DB_PORT') . ';charset=' . Config::get('DB_CHARSET'),

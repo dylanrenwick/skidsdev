@@ -49,7 +49,7 @@ class Filter
      * @param  $value    The value to be filtered
      * @return mixed    
      */
-    public static function XSSFilter(&$value)
+    public static function XSSFilter(mixed &$value): mixed
     {
         // if argument is a string, filters that string
         if (is_string($value)) {
@@ -75,7 +75,7 @@ class Filter
         return $value;
     }
 
-    public static function MarkdownFilter(&$value)
+    public static function MarkdownFilter(mixed &$value): mixed
     {
         if (is_string($value)) {
             $value = preg_replace("/\[(.*?)\]\(\w+:\/\/\w+\..+?\)/", "$1", $value);

@@ -8,7 +8,7 @@
  */
 class Environment
 {
-    public static function get()
+    public static function get(): string
     {
         // if APPLICATION_ENV constant exists (set in Apache configs)
         // then return content of APPLICATION_ENV

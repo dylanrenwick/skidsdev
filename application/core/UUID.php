@@ -2,7 +2,7 @@
 
 class UUID
 {
-    public static function v4() {
+    public static function v4(): string {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
     
           // 32 bits for "time_low"

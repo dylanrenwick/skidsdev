@@ -1,7 +1,7 @@
 <?php
 
 class WikiParser {
-    public static function parseWikiPage($text_content)
+    public static function parseWikiPage(string $text_content): string
     {
         $text_content = WikiParser::parseWikiTags($text_content);
 
@@ -9,7 +9,7 @@ class WikiParser {
         return $pd->text($text_content);
     }
 
-    static function parseWikiTags($text_content)
+    static function parseWikiTags(string $text_content): string
     {
         $text_content = preg_replace_callback_array(array(
             '/\[\[([a-zA-Z0-9\-_\(\)\/]+)\]\]/' => function ($match) {

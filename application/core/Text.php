@@ -2,9 +2,9 @@
 
 class Text
 {
-    private static $texts;
+    private static array $texts;
 
-    public static function get($key, $data = null)
+    public static function get(?string $key, array $data = null): ?string
     {
         // if not $key
         if (!$key) {
