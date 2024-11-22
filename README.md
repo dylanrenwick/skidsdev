@@ -1,26 +1,24 @@
-# Gargantua
+# SkidsDev
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/panique/huge/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/panique/huge/?branch=master)
-[![Code Climate](https://codeclimate.com/github/panique/huge/badges/gpa.svg)](https://codeclimate.com/github/panique/huge)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/01a221d168b04b1c94a85813519dab40)](https://www.codacy.com/app/panique/huge?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=panique/huge&amp;utm_campaign=Badge_Grade)
-[![Travis CI](https://travis-ci.org/panique/huge.svg?branch=master)](https://travis-ci.org/panique/huge)
-[![Dependency Status](https://www.versioneye.com/user/projects/54ca11fbde7924f81a000010/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54ca11fbde7924f81a000010)
-[![Support](https://supporterhq.com/api/b/9guz00i6rep05k1mwxyquz30k)](https://supporterhq.com/give/9guz00i6rep05k1mwxyquz30k)
+This repo houses the source code for my [personal portfolio website](https://skidsdev.xyz).
 
-Gargantua is a fork of the php-login project "HUGE".
+It's built with Gargantua, which is a fork of the php-login project "HUGE".  
+HUGE is a lightweight MVC framework created by Panique, and Gargantua is a personal continuation of the project, updating it and bringing it to PHP 8
 
 As HUGE has reached soft end of life, this is a community continuation of the project.  
 Some new things to expect in Gargantua:
 
- - Full PHP 7.3 support by default
-    - HUGE was designed to be used with PHP 5.5 or newer. Unfortunately this limited the framework from using features new to PHP 7
- - Cleaner and explicit versioning
-    - Did you know HUGE had versions? Most people didn't, it wasn't very clear
+ - Full PHP 8+ support by default
+    - HUGE was designed to be used with PHP 5.5 or newer. Unfortunately this limited the framework from using features new to PHP
+ - Strict typing
+    - When HUGE was built, PHP didn't have explicit type hinting or type checking. Now it does!
  - More features!
     - Optional Templating
     - Default actions
     - Markdown Support
     - OAuth Support
+
+## Below continues original HUGE readme
 
 ### What is HUGE?
 
