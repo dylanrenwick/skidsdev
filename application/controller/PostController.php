@@ -17,27 +17,27 @@ class PostController extends Controller
      * This method controls what happens when you move to /post/index in your app.
      * Gets all posts (of the user).
      */
-    public function index()
+    public function index(): void
     {
         $showHidden = LoginModel::isUserLoggedIn();
-        $this->View->render('post/index', array(
-            'posts' => PostModel::getAllPosts(0, $showHidden)
-        ));
+        $this->View->render("post/index", [
+            "posts" => PostModel::getAllPosts(0, $showHidden),
+        ]);
     }
 
-    public function post($post_id)
+    public function post(int $post_id): void
     {
         $post = PostModel::getPost($post_id);
         if ($post === false) {
-            $this->controller = new ErrorController;
-            $this->controller->error404();
+            $controller = new ErrorController();
+            $controller->error404();
             return;
         }
-        $this->View->renderMetaPreview($post->title, $post->text, '');
-        $this->View->render('post/post', array(
-            'post' => PostModel::getPost($post_id),
-            'series_info' => SeriesPostModel::getSeriesInfoByPost($post_id)
-        ));
+        $this->View->renderMetaPreview($post->title, $post->text, "");
+        $this->View->render("post/post", [
+            "post" => PostModel::getPost($post_id),
+            "series_info" => SeriesPostModel::getSeriesInfoByPost($post_id),
+        ]);
     }
 
     /**
@@ -45,16 +45,16 @@ class PostController extends Controller
      * Creates a new post. This is usually the target of form submit actions.
      * POST request.
      */
-    public function create()
+    public function create(): void
     {
         Auth::checkAuthentication();
-        PostModel::createPost(Request::post('post_text'));
+        PostModel::createPost(Request::post("post_text"));
         //Redirect::to('post');
     }
 
-    public function preview()
+    public function preview(): void
     {
-        $this->View->renderMarkdown(Request::post('text'));
+        $this->View->renderMarkdown(Request::post("text"));
     }
 
     /**
@@ -62,12 +62,14 @@ class PostController extends Controller
      * Shows the current content of the post and an editing form.
      * @param $post_id int id of the post
      */
-    public function edit($post_id = -1)
+    public function edit(int $post_id = -1): void
     {
         Auth::checkAuthentication();
-        $params = array();
-        if ($post_id >= 0) $params['post'] = PostModel::getPost($post_id);
-        $this->View->render('post/edit', $params);
+        $params = [];
+        if ($post_id >= 0) {
+            $params["post"] = PostModel::getPost($post_id);
+        }
+        $this->View->render("post/edit", $params);
     }
 
     /**
@@ -75,23 +77,34 @@ class PostController extends Controller
      * Edits a post (performs the editing after form submit).
      * POST request.
      */
-    public function editSave()
+    public function editSave(): void
     {
         Auth::checkAuthentication();
-        $post_id = Request::post('post_id');
-        $post_text = Request::post('post_text');
-        $post_title = Request::post('post_title');
-        $post_tags = Request::post('post_tags');
-        $post_series = intval(Request::post('post_series'));
+        $post_id = Request::post("post_id");
+        $post_text = Request::post("post_text");
+        $post_title = Request::post("post_title");
+        $post_tags = Request::post("post_tags");
+        $post_series = intval(Request::post("post_series"));
         if ($post_id >= 0) {
-            PostModel::updatePost($post_id, $post_title, $post_text, $post_tags, $post_series);
+            PostModel::updatePost(
+                $post_id,
+                $post_title,
+                $post_text,
+                $post_tags,
+                $post_series
+            );
         } else {
-            PostModel::createPost($post_title, $post_text, $post_tags, $post_series);
+            PostModel::createPost(
+                $post_title,
+                $post_text,
+                $post_tags,
+                $post_series
+            );
         }
         //Redirect::to('post');
     }
 
-    public function publish($post_id)
+    public function publish(int $post_id): void
     {
         Auth::checkAuthentication();
         PostModel::publishPost($post_id);
@@ -103,10 +116,10 @@ class PostController extends Controller
      * totally okay.
      * @param int $post_id id of the post
      */
-    public function delete($post_id)
+    public function delete(int $post_id): void
     {
         Auth::checkAuthentication();
         PostModel::deletePost($post_id);
-        Redirect::to('post');
+        Redirect::to("post");
     }
 }

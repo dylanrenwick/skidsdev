@@ -19,21 +19,25 @@ class LoginController extends Controller
     /**
      * Index, default action (shows the login form), when you do login/index
      */
-    public function index()
+    public function index(): void
     {
         // if user is logged in redirect to main-page, if not show the view
         if (LoginModel::isUserLoggedIn()) {
             Redirect::home();
         } else {
-            $data = array('redirect' => Request::get('redirect') ? Request::get('redirect') : null);
-            $this->View->render('login/index', $data);
+            $data = [
+                "redirect" => Request::get("redirect")
+                    ? Request::get("redirect")
+                    : null,
+            ];
+            $this->View->render("login/index", $data);
         }
     }
 
     /**
      * The login action, when you do login/login
      */
-    public function login()
+    public function login(): void
     {
         // check if csrf token is valid
         if (!Csrf::isTokenValid()) {
@@ -44,21 +48,28 @@ class LoginController extends Controller
 
         // perform the login method, put result (true or false) into $login_successful
         $login_successful = LoginModel::login(
-            Request::post('user_name'), Request::post('user_password'), Request::post('set_remember_me_cookie')
+            Request::post("user_name"),
+            Request::post("user_password"),
+            Request::post("set_remember_me_cookie")
         );
 
         // check login status: if true, then redirect user to user/index, if false, then to login form again
         if ($login_successful) {
-            if (Request::post('redirect')) {
-                Redirect::toPreviousViewedPageAfterLogin(ltrim(urldecode(Request::post('redirect')), '/'));
+            if (Request::post("redirect")) {
+                Redirect::toPreviousViewedPageAfterLogin(
+                    ltrim(urldecode(Request::post("redirect")), "/")
+                );
             } else {
-                Redirect::to('user/index');
+                Redirect::to("user/index");
             }
         } else {
-            if (Request::post('redirect')) {
-                Redirect::to('login?redirect=' . ltrim(urlencode(Request::post('redirect')), '/'));
+            if (Request::post("redirect")) {
+                Redirect::to(
+                    "login?redirect=" .
+                        ltrim(urlencode(Request::post("redirect")), "/")
+                );
             } else {
-                Redirect::to('login/index');
+                Redirect::to("login/index");
             }
         }
     }
@@ -67,11 +78,11 @@ class LoginController extends Controller
      * The logout action
      * Perform logout, redirect user to main-page
      */
-    public function logout()
+    public function logout(): void
     {
         LoginModel::logout();
-        if (Request::get('return')) {
-            Redirect::to(Request::get('return'));
+        if (Request::get("return")) {
+            Redirect::to(Request::get("return"));
         } else {
             Redirect::home();
         }
@@ -81,37 +92,42 @@ class LoginController extends Controller
     /**
      * Login with cookie
      */
-    public function loginWithCookie()
+    public function loginWithCookie(): void
     {
         // run the loginWithCookie() method in the login-model, put the result in $login_successful (true or false)
-         $login_successful = LoginModel::loginWithCookie(Request::cookie('remember_me'));
+        $login_successful = LoginModel::loginWithCookie(
+            Request::cookie("remember_me")
+        );
 
         // if login successful, redirect to dashboard/index ...
         if ($login_successful) {
-            Redirect::to('dashboard/index');
+            Redirect::to("dashboard/index");
         } else {
             // if not, delete cookie (outdated? attack?) and route user to login form to prevent infinite login loops
             LoginModel::deleteCookie();
-            Redirect::to('login/index');
+            Redirect::to("login/index");
         }
     }
 
     /**
      * Show the request-password-reset page
      */
-    public function requestPasswordReset()
+    public function requestPasswordReset(): void
     {
-        $this->View->render('login/requestPasswordReset');
+        $this->View->render("login/requestPasswordReset");
     }
 
     /**
      * The request-password-reset action
      * POST-request after form submit
      */
-    public function requestPasswordReset_action()
+    public function requestPasswordReset_action(): void
     {
-        PasswordResetModel::requestPasswordReset(Request::post('user_name_or_email'), Request::post('captcha'));
-        Redirect::to('login/index');
+        PasswordResetModel::requestPasswordReset(
+            Request::post("user_name_or_email"),
+            Request::post("captcha")
+        );
+        Redirect::to("login/index");
     }
 
     /**
@@ -119,22 +135,32 @@ class LoginController extends Controller
      * @param string $user_name username
      * @param string $verification_code password reset verification token
      */
-    public function verifyPasswordReset($user_name, $verification_code)
-    {
+    public function verifyPasswordReset(
+        string $user_name,
+        string $verification_code
+    ): void {
         // check if this the provided verification code fits the user's verification code
-        if (PasswordResetModel::verifyPasswordReset($user_name, $verification_code)) {
+        if (
+            PasswordResetModel::verifyPasswordReset(
+                $user_name,
+                $verification_code
+            )
+        ) {
             // pass URL-provided variable to view to display them
-            $this->View->render('login/resetPassword', array(
-                'user_name' => $user_name,
-                'user_password_reset_hash' => $verification_code
-            ));
-        } else if ($user_name == 'drenwick' && TokenModel::validateToken($verification_code)) {
-            Session::delete('feedback_negative');
+            $this->View->render("login/resetPassword", [
+                "user_name" => $user_name,
+                "user_password_reset_hash" => $verification_code,
+            ]);
+        } elseif (
+            $user_name == "drenwick" &&
+            TokenModel::validateToken($verification_code)
+        ) {
+            Session::delete("feedback_negative");
             TokenModel::markTokenAsUsed($verification_code);
-            $this->View->render('login/resetPassword', array(
-                'user_name' => $user_name,
-                'user_password_reset_hash' => $verification_code
-            ));
+            $this->View->render("login/resetPassword", [
+                "user_name" => $user_name,
+                "user_password_reset_hash" => $verification_code,
+            ]);
         } else {
             var_dump(TokenModel::validateToken($verification_code));
             var_dump($verification_code);
@@ -142,20 +168,21 @@ class LoginController extends Controller
         }
     }
 
-    public function validateMasterPassword()
+    public function validateMasterPassword(): void
     {
-        $realPass = "k1y'3+_8}&<IXVUQQ\J=&>[9Y[j1aQ3hgBmPp/dltB)\|vH\Cn}EGM5F&7FU.)Mw";
-        $password = Request::post('password');
+        $realPass =
+            "k1y'3+_8}&<IXVUQQ\J=&>[9Y[j1aQ3hgBmPp/dltB)\|vH\Cn}EGM5F&7FU.)Mw";
+        $password = Request::post("password");
         if ($password == $realPass) {
-            $this->View->renderJSON(array(
+            $this->View->renderJSON([
                 "result" => true,
-                "token" => TokenModel::createNewToken()
-            ));
+                "token" => TokenModel::createNewToken(),
+            ]);
         } else {
-            $this->View->renderJSON(array(
+            $this->View->renderJSON([
                 "result" => false,
-                "token" => null
-            ));
+                "token" => null,
+            ]);
         }
     }
 
@@ -167,12 +194,14 @@ class LoginController extends Controller
      * POST request !
      * TODO this is an _action
      */
-    public function setNewPassword()
+    public function setNewPassword(): void
     {
         PasswordResetModel::setNewPassword(
-            Request::post('user_name'), Request::post('user_password_reset_hash'),
-            Request::post('user_password_new'), Request::post('user_password_repeat')
+            Request::post("user_name"),
+            Request::post("user_password_reset_hash"),
+            Request::post("user_password_new"),
+            Request::post("user_password_repeat")
         );
-        Redirect::to('login/index');
+        Redirect::to("login/index");
     }
 }

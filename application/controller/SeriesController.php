@@ -7,29 +7,26 @@ class SeriesController extends Controller
         parent::__construct();
     }
 
-    public function index()
-    {
+    public function index(): void {}
 
-    }
-
-    public function create()
+    public function create(): void
     {
-        $name = Request::get('name');
+        $name = Request::get("name");
         Auth::checkAuthentication();
         SeriesModel::createSeries($name);
         $newSeries = SeriesModel::getSeriesByName($name);
-        $this->View->renderJSON(array(
-            'id' => $newSeries->id,
-            'name' => $newSeries->name
-        ));
+        $this->View->renderJSON([
+            "id" => $newSeries->id,
+            "name" => $newSeries->name,
+        ]);
     }
 
-    public function delete()
+    public function delete(): void
     {
-        $id = Request::get('id');
+        $id = Request::get("id");
         Auth::checkAuthentication();
-        $this->View->renderJSON(array(
-            'result' => SeriesModel::deleteSeries($id)
-        ));
+        $this->View->renderJSON([
+            "result" => SeriesModel::deleteSeries($id),
+        ]);
     }
 }

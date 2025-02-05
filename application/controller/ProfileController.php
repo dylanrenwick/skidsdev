@@ -16,11 +16,11 @@ class ProfileController extends Controller
      * This method controls what happens when you move to /overview/index in your app.
      * Shows a list of all users.
      */
-    public function index()
+    public function index(): void
     {
-        $this->View->render('profile/index', array(
-            'user' => UserModel::getUserDataByUserId(Session::get('user_id')))
-        );
+        $this->View->render("profile/index", [
+            "user" => UserModel::getUserDataByUserId(Session::get("user_id")),
+        ]);
     }
 
     /**
@@ -28,12 +28,12 @@ class ProfileController extends Controller
      * Shows the (public) details of the selected user.
      * @param $user_id int id the the user
      */
-    public function showProfile($user_id)
+    public function showProfile(int $user_id): void
     {
         if (isset($user_id)) {
-            $this->View->render('profile/showProfile', array(
-                'user' => UserModel::getPublicProfileOfUser($user_id))
-            );
+            $this->View->render("profile/showProfile", [
+                "user" => UserModel::getPublicProfileOfUser($user_id),
+            ]);
         } else {
             Redirect::home();
         }

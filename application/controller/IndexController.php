@@ -14,8 +14,8 @@ class IndexController extends Controller
      * Handles what happens when user moves to URL/index/index - or - as this is the default controller, also
      * when user moves to /index or enter your application at base level
      */
-    public function index()
+    public function index(): void
     {
-        $this->View->render('index/index');
+        $this->View->render("index/index");
     }
 }
