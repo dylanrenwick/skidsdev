@@ -17,17 +17,21 @@ class Request
     {
         if ($url !== null) {
             // split URL
-            $url = trim($url, '/');
+            $url = trim($url, "/");
             $url = filter_var($url, FILTER_SANITIZE_URL);
-            $url_parts = explode('/', $url);
+            $url_parts = explode("/", $url);
         } else {
             $url_parts = [];
         }
 
         // put URL parts into according properties
-        $controller = isset($url_parts[0]) ? $url_parts[0] : Config::get('DEFAULT_CONTROLLER');
-        $this->controller = ucwords($controller) . 'Controller';
-        $this->action = isset($url_parts[1]) ? $url_parts[1] : Config::get('DEFAULT_ACTION');
+        $controller = isset($url_parts[0])
+            ? $url_parts[0]
+            : Config::get("DEFAULT_CONTROLLER");
+        $this->controller = ucwords($controller) . "Controller";
+        $this->action = isset($url_parts[1])
+            ? $url_parts[1]
+            : Config::get("DEFAULT_ACTION");
 
         // rebase array keys and store the URL parameters
         $this->parameters = array_slice($url_parts, 2);
@@ -35,7 +39,7 @@ class Request
 
     public function controller_file(): string
     {
-        return $this->controller . '.php';
+        return $this->controller . ".php";
     }
 
     /**
@@ -50,11 +54,11 @@ class Request
     {
         return isset($_POST[$key]) ? $_POST[$key] : null;
     }
-    
+
     public static function postClean(string $key): ?string
     {
         $post_val = Request::post($key);
-        return ($val !== null) ? trim(strip_tags($post_val)) : $post_val;
+        return trim(strip_tags($post_val));
     }
 
     /**
@@ -88,8 +92,8 @@ class Request
         return isset($_COOKIE[$key]) ? $_COOKIE[$key] : null;
     }
 
-    public static function doNotTrack()
+    public static function doNotTrack(): bool
     {
-        return (isset($_SERVER['HTTP_DNT']) && (int)$_SERVER['HTTP_DNT'] === 1);
+        return isset($_SERVER["HTTP_DNT"]) && (int) $_SERVER["HTTP_DNT"] === 1;
     }
 }
