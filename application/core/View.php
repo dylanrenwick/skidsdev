@@ -7,6 +7,9 @@
 #[AllowDynamicProperties]
 class View
 {
+    public $meta = [];
+    public $component_args = [];
+
     /**
      * simply includes (=shows) the view. this is done from the controller. In the controller, you usually say
      * $this->view->render('help/index'); to show (in this example) the view index.php in the folder help.
@@ -14,9 +17,12 @@ class View
      * @param string $filename Path of the to-be-rendered view, usually folder/file(.php)
      * @param array $data Data to be used in the view
      */
-    public function render(string $filename, ?array $data = null, bool $template = true): void
-    {
-        self::renderFiles(array($filename), $data, $template);
+    public function render(
+        string $filename,
+        ?array $data = null,
+        bool $template = true
+    ): void {
+        self::renderFiles([$filename], $data, $template);
     }
 
     /**
@@ -25,38 +31,48 @@ class View
      * @param array $filenames Array of the paths of the to-be-rendered view, usually folder/file(.php) for each
      * @param array $data Data to be used in the view
      */
-    public function renderFiles(array $filenames, ?array $data = null, bool $template = true): void
-    {
+    public function renderFiles(
+        array $filenames,
+        ?array $data = null,
+        bool $template = true
+    ): void {
         if ($data) {
             foreach ($data as $key => $value) {
                 $this->{$key} = $value;
             }
         }
         if ($template) {
-            $before_templates = Config::get('TEMPLATE_BEFORE');
+            $before_templates = Config::get("TEMPLATE_BEFORE");
             if ($before_templates) {
                 foreach ($before_templates as $filename) {
-                    require Config::get('PATH_VIEW') . Config::get('PATH_TEMPLATE') . $filename;
+                    require Config::get("PATH_VIEW") .
+                        Config::get("PATH_TEMPLATE") .
+                        $filename;
                 }
             }
         }
-        foreach($filenames as $filename) {
-            require Config::get('PATH_VIEW') . $filename . '.php';
+        foreach ($filenames as $filename) {
+            require Config::get("PATH_VIEW") . $filename . ".php";
         }
         if ($template) {
-            $after_templates = Config::get('TEMPLATE_AFTER');
+            $after_templates = Config::get("TEMPLATE_AFTER");
             if ($after_templates) {
                 foreach ($after_templates as $filename) {
-                    require Config::get('PATH_VIEW') . Config::get('PATH_TEMPLATE') . $filename;
+                    require Config::get("PATH_VIEW") .
+                        Config::get("PATH_TEMPLATE") .
+                        $filename;
                 }
             }
         }
     }
 
-    public function renderComponent(string $filename, array$args = []): void
+    public function renderComponent(string $filename, array $args = []): void
     {
         $this->component_args = $args;
-        require Config::get('PATH_VIEW') . Config::get('PATH_COMPONENT') . $filename . '.php';
+        require Config::get("PATH_VIEW") .
+            Config::get("PATH_COMPONENT") .
+            $filename .
+            ".php";
     }
 
     public function renderMarkdown(string $text): void
@@ -75,15 +91,17 @@ class View
      * @param string $filename Path of the to-be-rendered view, usually folder/file(.php)
      * @param mixed $data Data to be used in the view
      */
-    public function renderWithoutHeaderAndFooter(string $filename, ?array $data = null): void
-    {
+    public function renderWithoutHeaderAndFooter(
+        string $filename,
+        ?array $data = null
+    ): void {
         if ($data) {
             foreach ($data as $key => $value) {
                 $this->{$key} = $value;
             }
         }
 
-        require Config::get('PATH_VIEW') . $filename . '.php';
+        require Config::get("PATH_VIEW") . $filename . ".php";
     }
 
     /**
@@ -103,20 +121,23 @@ class View
     {
         // echo out the feedback messages (errors and success messages etc.),
         // they are in $_SESSION["feedback_positive"] and $_SESSION["feedback_negative"]
-        require Config::get('PATH_VIEW') . '_templates/feedback.php';
+        require Config::get("PATH_VIEW") . "_templates/feedback.php";
 
         // delete these messages (as they are not needed anymore and we want to avoid to show them twice
-        Session::set('feedback_positive', null);
-        Session::set('feedback_negative', null);
+        Session::set("feedback_positive", null);
+        Session::set("feedback_negative", null);
     }
 
-    public function renderMetaPreview(string $title, string $desc, string $image_url): void
-    {
-        $this->meta = array(
-            'title' => $title,
-            'desc' => $desc,
-            'image' => $image_url
-        );
+    public function renderMetaPreview(
+        string $title,
+        string $desc,
+        string $image_url
+    ): void {
+        $this->meta = [
+            "title" => $title,
+            "desc" => $desc,
+            "image" => $image_url,
+        ];
     }
 
     /**
@@ -128,8 +149,10 @@ class View
      *
      * @return bool Shows if the controller is used or not
      */
-    public static function checkForActiveController(string $filename, string $navigation_controller): bool
-    {
+    public static function checkForActiveController(
+        string $filename,
+        string $navigation_controller
+    ): bool {
         $split_filename = explode("/", $filename);
         $active_controller = $split_filename[0];
 
@@ -149,8 +172,10 @@ class View
      *
      * @return bool Shows if the action/method is used or not
      */
-    public static function checkForActiveAction(string $filename, string $navigation_action): bool
-    {
+    public static function checkForActiveAction(
+        string $filename,
+        string $navigation_action
+    ): bool {
         $split_filename = explode("/", $filename);
         $active_action = $split_filename[1];
 
@@ -170,8 +195,10 @@ class View
      *
      * @return bool
      */
-    public static function checkForActiveControllerAndAction(string $filename, string $navigation_controller_and_action): bool
-    {
+    public static function checkForActiveControllerAndAction(
+        string $filename,
+        string $navigation_controller_and_action
+    ): bool {
         $split_filename = explode("/", $filename);
         $active_controller = $split_filename[0];
         $active_action = $split_filename[1];
@@ -180,7 +207,10 @@ class View
         $navigation_controller = $split_filename[0];
         $navigation_action = $split_filename[1];
 
-        if ($active_controller == $navigation_controller AND $active_action == $navigation_action) {
+        if (
+            $active_controller == $navigation_controller and
+            $active_action == $navigation_action
+        ) {
             return true;
         }
 
@@ -196,6 +226,6 @@ class View
      */
     public function encodeHTML(string $str): string
     {
-        return htmlentities($str, ENT_QUOTES, 'UTF-8');
+        return htmlentities($str, ENT_QUOTES, "UTF-8");
     }
 }

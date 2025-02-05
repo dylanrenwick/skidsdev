@@ -2,11 +2,15 @@
 
 class Database
 {
-    public static function query(string $sql, array $data = [])
-    {
+    public static function query(
+        string $sql,
+        array $data = []
+    ): PDOStatement|bool {
         $exclude = [];
-        foreach(array_keys($data) as $key) {
-            if(preg_match("/$key/", $sql) !== 1) array_push($exclude, $key);
+        foreach (array_keys($data) as $key) {
+            if (preg_match("/$key/", $sql) !== 1) {
+                array_push($exclude, $key);
+            }
         }
         $data = array_diff_key($data, array_flip($exclude));
 
@@ -16,7 +20,7 @@ class Database
         return $query;
     }
 
-    public function prepare($sql)
+    public function prepare(string $sql): PDOStatement|bool
     {
         $db = DatabaseFactory::getFactory()->getConnection();
         return $db->prepare($sql);
