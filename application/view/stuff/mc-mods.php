@@ -1,5 +1,6 @@
 <h1>How to install MC Mods with Prism</h1>
-<p><a class="active-link" href="https://prismlauncher.org">Prism Launcher</a> is an open-source, free-to-use Minecraft launcher that allows you to easily install mods, even if you have no idea what you're doing.</p>
+<p><a class="active-link" href="https://prismlauncher.org">Prism Launcher</a> is an open-source, free-to-use Minecraft launcher that allows you to easily install mods, even if you have no idea what you're doing.
+<br/>The images below are all taken on Windows 11, however Prism provides full support for Windows, MacOS, and Linux. It's even supported on Steam Deck! For linux users, it's available as an Appimage, a Flatpak on Flathub, or a portable app.</p>
 <p>Once you've installed Prism, you'll be prompted to log in to your Microsoft account. Be sure to use the same account you use to play Minecraft.</p>
 <br/>
 <p>Now, simply create a new instance with the "Add Instance" button. Prism instances make it easy to maintain multiple installations of Minecraft with different mods and even game versions. Hello LondON currently uses:<pre>Minecraft v1.21.4</pre></p>
