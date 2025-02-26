@@ -13,7 +13,7 @@
         </script>
     <?php } ?>
 
-    <?php if (isset($this->meta)) { ?>
+    <?php if (!empty($this->meta)) { ?>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="" />
         <meta name="twitter:title" content="<?= $this->meta['title']; ?>" />
