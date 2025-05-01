@@ -34,6 +34,5 @@ class LetterModel
             ':letter_contents' => $letter_text
         ));
 
-        if 
     }
 }
