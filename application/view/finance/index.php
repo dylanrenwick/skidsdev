@@ -1,0 +1,25 @@
+<h1>Finance Sheets</h1>
+<?php if (Session::userIsLoggedIn()) { ?>
+    <span class='new-list-item-button'><a href='sheet/edit'>New Sheet</a></span>
+<?php } ?>
+
+<!-- echo out the system feedback (error and success messages) -->
+<?php $this->renderFeedbackMessages(); ?>
+
+<?php if ($this->sheets) { ?>
+    <?php foreach($this->sheets as $key => $value) { ?>
+        <a href='<?= Config::get('URL'); ?>post/post/<?= $value->id; ?>' class="list-item">
+            <span href='' class="list-item-title"><?= $value->title; ?>
+            <?php if (!$value->active) { ?>
+                <i class="fas fa-rss"></i>
+            <?php } ?></span>
+            <br>
+            <div class="list-item-body"><?php
+                
+            ?></div><br>
+            <span class="list-item-footer">By <?= $value->user_name; ?> on <?= $value->created_at ?></span>
+        </a>
+    <?php } ?>
+<?php } else { ?>
+    <div>No posts yet.</div>
+<?php } ?>
