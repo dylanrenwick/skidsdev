@@ -48,7 +48,7 @@ class PostController extends Controller
     public function create(): void
     {
         Auth::checkAuthentication();
-        PostModel::createPost(Request::post("post_text"));
+        PostModel::createPost(Request::post("post_title"), Request::post("post_text"));
         //Redirect::to('post');
     }
 
