@@ -157,7 +157,7 @@ SQL;
         $query->execute();
 
         if ($query->rowCount() == 1) {
-            SeriesPostModel::createSeriesPost($post_id, $series_id);
+            SeriesPostModel::createSeriesPost($post_id, $post_series);
 
             return true;
         }
