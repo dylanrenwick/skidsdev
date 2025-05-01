@@ -43,7 +43,7 @@ class EssayChannelModel
         return EssayChannelModel::filterNoiseCategories($results, $channels);
     }
 
-    public static function createChannel($name, $description, $categories, $image_url)
+    public static function createChannel($name, $desc, $categories, $image_url)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
