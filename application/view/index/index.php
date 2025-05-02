@@ -38,5 +38,5 @@
     <br>
     Email me at <a href="mailto:dylan.renwick96@gmail.com" class="active-link">dylan.renwick96@gmail.com</a>
     <br>
-    Or shoot me a discord message at <a href="https://discord.gg" class="active-link">Kaho#8557</a>
+    Or shoot me a discord message at <a href="https://discord.gg" class="active-link">@mayube</a>
 </p>
