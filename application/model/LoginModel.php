@@ -47,7 +47,7 @@ class LoginModel
         }
 
         // reset the failed login counter for that user (if necessary)
-        if ($result->user_last_failed_login > 0) {
+        if ($result->last_failed_login > 0) {
             self::resetFailedLoginCounterOfUser($result->username);
         }
 
