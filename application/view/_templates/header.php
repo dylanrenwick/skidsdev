@@ -87,6 +87,9 @@
                         <a href="<?=Config::get('URL');?>admin/" class="sidebar-link
                             <?= View::checkForActiveController($filename, "admin") ? 'active-link' : ''; ?>
                             animated zoomInLeft slow">Admin</a>
+                        <a href="<?=Config::get('URL');?>finance/" class="sidebar-link
+                            <?= View::checkForActiveController($filename, "admin") ? 'active-link' : ''; ?>
+                            animated zoomInLeft slow">Finance</a>
                     <?php endif; ?>
                     <a href="<?=Config::get('URL');?>user" class="sidebar-link 
                         <?= View::checkForActiveController($filename, "user") ? 'active-link' : ''; ?> 
