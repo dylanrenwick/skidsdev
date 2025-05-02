@@ -2,7 +2,7 @@
 
 class Text
 {
-    private static array $texts;
+    private static array $texts = [];
 
     public static function get(?string $key, array $data = null): ?string
     {
