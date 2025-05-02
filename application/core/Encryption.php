@@ -12,14 +12,14 @@ class Encryption
      *
      * @var string
      */
-    const string CIPHER = 'aes-256-cbc';
+    private static string $CIPHER = 'aes-256-cbc';
 
     /**
      * Hash function
      *
      * @var string
      */
-    const string HASH_FUNCTION = 'sha256';
+    private static string $HASH_FUNCTION = 'sha256';
 
     /**
      * constructor for Encryption object.
@@ -51,14 +51,14 @@ class Encryption
         // generate initialization vector,
         // this will make $iv different every time,
         // so, encrypted string will be also different.
-        $iv_size = openssl_cipher_iv_length(self::CIPHER);
+        $iv_size = openssl_cipher_iv_length(self::$CIPHER);
         $iv = openssl_random_pseudo_bytes($iv_size);
 
         // generate key for authentication using ENCRYPTION_KEY & HMAC_SALT
-        $key = mb_substr(hash(self::HASH_FUNCTION, Config::get('ENCRYPTION_KEY') . Config::get('HMAC_SALT')), 0, 32, '8bit');
+        $key = mb_substr(hash(self::$HASH_FUNCTION, Config::get('ENCRYPTION_KEY') . Config::get('HMAC_SALT')), 0, 32, '8bit');
 
         // append initialization vector
-        $encrypted_string = openssl_encrypt($plain, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
+        $encrypted_string = openssl_encrypt($plain, self::$CIPHER, $key, OPENSSL_RAW_DATA, $iv);
         $ciphertext = $iv . $encrypted_string;
 
         // apply the HMAC
@@ -89,7 +89,7 @@ class Encryption
         }
 
         // generate key used for authentication using ENCRYPTION_KEY & HMAC_SALT
-        $key = mb_substr(hash(self::HASH_FUNCTION, Config::get('ENCRYPTION_KEY') . Config::get('HMAC_SALT')), 0, 32, '8bit');
+        $key = mb_substr(hash(self::$HASH_FUNCTION, Config::get('ENCRYPTION_KEY') . Config::get('HMAC_SALT')), 0, 32, '8bit');
 
         // split cipher into: hmac, cipher & iv
         $macSize = 64;
@@ -103,11 +103,11 @@ class Encryption
         }
 
         // split out the initialization vector and cipher
-        $iv_size = openssl_cipher_iv_length(self::CIPHER);
+        $iv_size = openssl_cipher_iv_length(self::$CIPHER);
         $iv = mb_substr($iv_cipher, 0, $iv_size, '8bit');
         $cipher = mb_substr($iv_cipher, $iv_size, null, '8bit');
 
-        return openssl_decrypt($cipher, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
+        return openssl_decrypt($cipher, self::$CIPHER, $key, OPENSSL_RAW_DATA, $iv);
     }
 
     /**
