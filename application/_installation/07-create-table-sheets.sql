@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS `huge`.`sheets` (
+	`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+	`title` text NOT NULL,
+	`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

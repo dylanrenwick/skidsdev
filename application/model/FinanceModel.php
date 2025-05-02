@@ -15,7 +15,7 @@ SELECT
     id,
     title,
     created_at,
-    modified_at
+    updated_at
 FROM sheets
 ORDER BY created_at DESC
 SQL;
@@ -34,7 +34,7 @@ SELECT
         sheet.id,
         sheet.title,
         sheet.created_at,
-        sheet.modified_at
+        sheet.updated_at
 FROM sheets AS sheet
 WHERE id = :sheet_id
 ORDER BY created_at DESC
