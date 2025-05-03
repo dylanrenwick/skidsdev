@@ -108,6 +108,42 @@ SQL;
         // default return
         Session::add('feedback_negative', Text::get('FEEDBACK_NOTE_CREATION_FAILED'));
         return false;
+	}
 
+	public static function createTransaction($sheet_id, $amount, $description, $category_id)
+	{
+		$database = DatabaseFactory::getFactory()->getConnection();
+
+		$sql = "INSERT INTO transactions (amount, description, sheet_id, category_id) VALUES (:amount, :desc, :sheet_id, :category_id)";
+
+		$query = $database->prepare($sql);
+		// PARAM_STR is the 'correct' way to bind a float
+		// src: https://www.php.net/manual/en/pdo.constants.php#129168
+        $query->bindValue(':amount', $amount, PDO::PARAM_STR);
+		$query->bindValue(':desc', $description, PDO::PARAM_STR);
+		$query->bindValue(':sheet_id', $sheet_id, PDO::PARAM_INT);
+		$query->bindValue(':category_id', $category_id, PDO::PARAM_INT);
+        $query->execute();
+
+		if ($query->rowCount() == 1) {
+			$sql = "SELECT id FROM transactions WHERE amount = :amount AND description = :desc AND sheet_id = :sheet_id AND category_id = :category_id LIMIT 1";
+
+			$query = $database->prepare($sql);
+			// PARAM_STR is the 'correct' way to bind a float
+			// src: https://www.php.net/manual/en/pdo.constants.php#129168
+			$query->bindValue(':amount', $amount, PDO::PARAM_STR);
+			$query->bindValue(':desc', $description, PDO::PARAM_STR);
+			$query->bindValue(':sheet_id', $sheet_id, PDO::PARAM_INT);
+			$query->bindValue(':category_id', $category_id, PDO::PARAM_INT);
+			$query->execute();
+
+			$sheet_id = $query->fetch()->id;
+
+			return $sheet_id;
+		}
+
+        // default return
+        Session::add('feedback_negative', Text::get('FEEDBACK_NOTE_CREATION_FAILED'));
+        return false;
 	}
 }
