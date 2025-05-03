@@ -65,7 +65,7 @@ table.sheet-table td.transaction-amount.negative {
 	<div class="sheet">
 		<h1><?php
 			$sum = array_reduce($this->transactions, function($a, $b){$a+=$b->amount;return $a;}, 0);
-			echo $this->sheet->title . '  -=-  $' . $sum;
+			echo $this->sheet->title . '  -=-  Total so far: $' . $sum;
 		?></h1>
 		<span class="sheet-footer">Created on <?= $this->sheet->created_at ?></span>
 		<table class="sheet-table">
