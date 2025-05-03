@@ -45,10 +45,19 @@ table.sheet-table {
 	border: 1px solid #888;
 	width: 100%;
 }
-table.sheet-table td {
+table.sheet-table tr {
 	border: 1px solid #888;
+}
+table.sheet-table td {
+	margin: 0;
 	text-align: center;
 	padding: 5px;
+}
+table.sheet-table td.transaction-amount.positive {
+	background-color: #1a2;
+}
+table.sheet-table td.transaction-amount.negative {
+	background-color: #a42;
 }
 </style>
 
@@ -64,7 +73,8 @@ table.sheet-table td {
 				<col span="1" style="width: 15%;">
 				<col span="1" style="width: 10%;">
 				<col span="1" style="width: 50%;">
-				<col span="1" style="width: 25%;">
+				<col span="1" style="width: 20%;">
+				<col span="1" style="width:  5%;">
 			</colgroup>
 
 			<tbody>
@@ -73,6 +83,7 @@ table.sheet-table td {
 					<th>Amount</th>
 					<th>Description</th>
 					<th>Category</th>
+					<th></th>
 				</tr>
 				<?php foreach($this->transactions as $transaction) { ?>
 					<tr>
@@ -81,9 +92,10 @@ table.sheet-table td {
 							$parts = explode(' ', $date);
 							echo $parts[0];
 						?></td>
-						<td><?= $transaction->amount; ?></td>
+						<td class="transaction-amount <?= (($transaction->amount > 0) ? 'positive' : 'negative') ?>"><?= $transaction->amount; ?></td>
 						<td><?= $transaction->description; ?></td>
 						<td><?= $transaction->category_name; ?></td>
+						<td>TODO:EDIT</td>
 					</tr>
 				<?php } ?>
 			</tbody>
