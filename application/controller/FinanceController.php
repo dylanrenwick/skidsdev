@@ -33,7 +33,8 @@ class FinanceController extends Controller
         $this->View->renderMetaPreview($sheet->title, "", "");
         $this->View->render("finance/sheet", [
             "sheet" => $sheet,
-            "transactions" => FinanceModel::getSheetTransactions($sheet_id)
+			"transactions" => FinanceModel::getSheetTransactions($sheet_id),
+			"categories" => FinanceModel::getAllCategories(),
         ]);
     }
 

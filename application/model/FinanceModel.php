@@ -71,6 +71,18 @@ SQL;
         return $query->fetchAll();
     }
 
+	public static function getAllCategories()
+	{
+		$database = DatabaseFactory::getFactory()->getConnection();
+
+		$sql = "SELECT id, name FROM transaction_categories";
+
+		$query = $database->prepare($sql);
+		$query->execute();
+
+		return $query->fetchAll();
+	}
+
 	public static function createSheet($sheet_title)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
