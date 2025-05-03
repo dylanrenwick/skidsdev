@@ -49,7 +49,7 @@
 
 <?php if ($this->sheets) { ?>
     <?php foreach($this->sheets as $key => $value) { ?>
-        <a href='<?= Config::get('URL'); ?>post/post/<?= $value->id; ?>' class="list-item">
+        <a href='<?= Config::get('URL'); ?>finance/sheet/<?= $value->id; ?>' class="list-item">
             <span href='' class="list-item-title"><?= $value->title; ?>
             <?php if (!$value->active) { ?>
                 <i class="fas fa-rss"></i>
@@ -58,9 +58,9 @@
             <div class="list-item-body"><?php
                 
             ?></div><br>
-            <span class="list-item-footer">By <?= $value->user_name; ?> on <?= $value->created_at ?></span>
+            <span class="list-item-footer">Created on <?= $value->created_at ?></span>
         </a>
     <?php } ?>
 <?php } else { ?>
-    <div>No posts yet.</div>
+    <div>No sheets found.</div>
 <?php } ?>
