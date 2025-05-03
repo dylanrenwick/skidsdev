@@ -57,10 +57,10 @@ SELECT
     transaction.amount,
     transaction.date,
     transaction.description,
-    transaction_type.name AS transaction_type_name
+    category.name AS category_name
 FROM transactions AS transaction
-    INNER JOIN transaction_types AS transaction_type
-        ON transaction.transaction_type_id = transaction_type.id
+    INNER JOIN transaction_categories AS category
+        ON transaction.category_id = category.id
 WHERE sheet_id = :sheet_id
 ORDER BY date DESC
 SQL;
