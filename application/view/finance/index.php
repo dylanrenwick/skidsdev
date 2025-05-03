@@ -1,6 +1,47 @@
 <h1>Finance Sheets</h1>
 <?php if (Session::userIsLoggedIn()) { ?>
-    <span class='new-list-item-button'><a href='sheet/edit'>New Sheet</a></span>
+	<script>
+		function newSheetClick(event) {
+			event.preventDefault();
+			console.log('click');
+			
+			const newSheetForm = document.getElementById('new-sheet-form');
+			if (newSheetForm === null) {
+				console.error("Could not find '#new-sheet-form'");
+				return;
+			}
+
+			const styles = newSheetForm.attributeStyleMap;
+			const val = styles.get('display');
+			const isHidden = val == 'none';
+
+			styles.set('display', isHidden ? 'block' : 'none');
+			if (isHidden) {
+				const titleField = document.getElementById('new-sheet-title');
+				if (titleField === null) {
+					console.error("Could not find '#new-sheet-title'");
+					return;
+				}
+				if (titleField.value.length <= 0) {
+					const date = new Date();
+					const month = date.toLocaleString('default', { month: 'long' });
+					const year = date.toLocaleString('default', { year: 'numeric' });
+					const defaultTitle = `${month}, ${year}`;
+					console.log(defaultTitle);
+					titleField.value = defaultTitle;
+				}
+			}
+		}
+	</script>
+	<span class='new-list-item-button'>
+		<a href='#' onclick='newSheetClick(event)'>New Sheet</a>
+		<div id='new-sheet-form' style='display:none;'>
+			<form method='post' action='<?= Config::get('URL'); ?>finance/sheet/new'>
+				<input id='new-sheet-title' type='text' name='title' placeholder='Title' required />
+				<input type='submit' value='+' />
+			</form>
+		</div>
+	</span>
 <?php } ?>
 
 <!-- echo out the system feedback (error and success messages) -->
