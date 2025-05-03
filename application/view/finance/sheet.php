@@ -40,24 +40,53 @@
 <!-- echo out the system feedback (error and success messages) -->
 <?php $this->renderFeedbackMessages(); ?>
 
+<style>
+table.sheet-table {
+	border: 1px solid #888;
+	width: 100%;
+}
+table.sheet-table td {
+	border: 1px solid #888;
+	text-align: center;
+	padding: 5px;
+}
+</style>
+
 <?php if ($this->sheet) { ?>
 	<div class="sheet">
-		<h1><?= $this->sheet->title; ?></h1>
-		<table class="sheet-table">
-			<tr>
-				<th>Date</th>
-				<th>Amount</th>
-				<th>Category</th>
-				<th>Comment</th>
-			</tr>
-			<?php foreach($this->transactions as $transaction) { ?>
-				<tr>
-					<td><?= $transaction->date; ?></td>
-					<td><?= $transaction->amount; ?></td>
-					<td><?= $transaction->category; ?></td>
-					<td><?= $transaction->comment; ?></td>
-				</tr>
-			<?php } ?>
+		<h1><?php
+			$sum = array_reduce($this->transactions, function($a, $b){$a+=$b->amount;return $a;}, 0);
+			echo $this->sheet->title . '  -=-  $' . $sum;
+		?></h1>
 		<span class="sheet-footer">Created on <?= $this->sheet->created_at ?></span>
+		<table class="sheet-table">
+			<colgroup>
+				<col span="1" style="width: 15%;">
+				<col span="1" style="width: 10%;">
+				<col span="1" style="width: 50%;">
+				<col span="1" style="width: 25%;">
+			</colgroup>
+
+			<tbody>
+				<tr>
+					<th>Date</th>
+					<th>Amount</th>
+					<th>Description</th>
+					<th>Category</th>
+				</tr>
+				<?php foreach($this->transactions as $transaction) { ?>
+					<tr>
+						<td><?php
+							$date = $transaction->date;
+							$parts = explode(' ', $date);
+							echo $parts[0];
+						?></td>
+						<td><?= $transaction->amount; ?></td>
+						<td><?= $transaction->description; ?></td>
+						<td><?= $transaction->category_name; ?></td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
 	</div>
 <?php } ?>
