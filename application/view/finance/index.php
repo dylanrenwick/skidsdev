@@ -36,7 +36,7 @@
 	<span class='new-list-item-button'>
 		<a href='#' onclick='newSheetClick(event)'>New Sheet</a>
 		<div id='new-sheet-form' style='display:none;'>
-			<form method='post' action='<?= Config::get('URL'); ?>finance/sheet/new'>
+			<form method='get' action='<?= Config::get('URL'); ?>finance/create'>
 				<input id='new-sheet-title' type='text' name='title' placeholder='Title' required />
 				<input type='submit' value='+' />
 			</form>

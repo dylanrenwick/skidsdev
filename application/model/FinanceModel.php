@@ -70,4 +70,32 @@ SQL;
 
         return $query->fetchAll();
     }
+
+	public static function createSheet($sheet_title)
+	{
+		$database = DatabaseFactory::getFactory()->getConnection();
+
+		$sql = "INSERT INTO sheets (title) VALUES (:sheet_title)";
+
+        $query = $database->prepare($sql);
+        $query->bindValue(':sheet_title', $sheet_title, PDO::PARAM_STR);
+        $query->execute();
+
+		if ($query->rowCount() == 1) {
+			$sql = "SELECT id FROM sheets WHERE title = :sheet_title LIMIT 1";
+
+			$query = $database->prepare($sql);
+			$query->bindValue(':sheet_title', $sheet_title, PDO::PARAM_STR);
+			$query->execute();
+
+			$sheet_id = $query->fetch()->id;
+
+			return $sheet_id;
+		}
+
+        // default return
+        Session::add('feedback_negative', Text::get('FEEDBACK_NOTE_CREATION_FAILED'));
+        return false;
+
+	}
 }

@@ -36,4 +36,20 @@ class FinanceController extends Controller
             "transactions" => FinanceModel::getSheetTransactions($sheet_id)
         ]);
     }
+
+	public function create(): void
+	{
+		$sheet_title = Request::get('title');
+		if (!$sheet_title) {
+			Redirect::to('finance/index');
+			return;
+		}
+		$sheet_id = FinanceModel::createSheet($sheet_title);
+		if ($sheet_id === false) {
+			Redirect::to('finance/index');
+			return;
+		}
+
+		Redirect::to('finance/sheet/'.$sheet_id);	
+	}
 }
