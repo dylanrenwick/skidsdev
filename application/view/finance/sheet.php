@@ -23,7 +23,7 @@
 		<div id='new-sheet-form' style='display:none;'>
 			<form method='get' action='<?= Config::get('URL'); ?>finance/createTransaction'>
 				<input type='hidden' name='sheet_id' value='<?= $this->sheet->id; ?>' />
-				<input type='number' name='amount' placeholder='Amount' required />
+				<input type='number' name='amount' step='.01' placeholder='Amount' required />
 				<input type='text' name='title' placeholder='Title' required />
 				<select name='category' required>
 					<option value=''>Select Category</option>
