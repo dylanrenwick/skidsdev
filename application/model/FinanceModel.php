@@ -6,70 +6,71 @@
  */
 class FinanceModel
 {
-    public static function getAllSheets()
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
+	public static function getAllSheets()
+	{
+		$database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = <<<SQL
+		$sql = <<<SQL
 SELECT
-    id,
-    title,
-    created_at,
-    updated_at
+	id,
+	title,
+	created_at,
+	updated_at
 FROM sheets
 ORDER BY created_at DESC
 SQL;
-        $query = $database->prepare($sql);
-        $query->execute();
+		$query = $database->prepare($sql);
+		$query->execute();
 
-        return $query->fetchAll();
-    }
+		return $query->fetchAll();
+	}
 
-    public static function getSheet($sheet_id)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
+	public static function getSheet($sheet_id)
+	{
+		$database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = <<<SQL
+		$sql = <<<SQL
 SELECT
-        sheet.id,
-        sheet.title,
-        sheet.created_at,
-        sheet.updated_at
+		sheet.id,
+		sheet.title,
+		sheet.created_at,
+		sheet.updated_at
 FROM sheets AS sheet
 WHERE id = :sheet_id
 ORDER BY created_at DESC
 LIMIT 1
 SQL;
-        $query = $database->prepare($sql);
-        $query->bindValue(':sheet_id', $sheet_id, PDO::PARAM_INT);
-        $query->execute();
+		$query = $database->prepare($sql);
+		$query->bindValue(':sheet_id', $sheet_id, PDO::PARAM_INT);
+		$query->execute();
 
-        return $query->fetch();
-    }
+		return $query->fetch();
+	}
 
-    public static function getSheetTransactions($sheet_id)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
+	public static function getSheetTransactions($sheet_id)
+	{
+		$database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = <<<SQL
+		$sql = <<<SQL
 SELECT
-    transaction.id,
-    transaction.amount,
-    transaction.date,
-    transaction.description,
-    category.name AS category_name
+	transaction.id,
+	transaction.amount,
+	transaction.date,
+	transaction.description,
+	category.id AS category_id,
+	category.name AS category_name
 FROM transactions AS transaction
-    INNER JOIN transaction_categories AS category
-        ON transaction.category_id = category.id
+	INNER JOIN transaction_categories AS category
+		ON transaction.category_id = category.id
 WHERE sheet_id = :sheet_id
 ORDER BY date DESC
 SQL;
-        $query = $database->prepare($sql);
-        $query->bindValue(':sheet_id', $sheet_id, PDO::PARAM_INT);
-        $query->execute();
+		$query = $database->prepare($sql);
+		$query->bindValue(':sheet_id', $sheet_id, PDO::PARAM_INT);
+		$query->execute();
 
-        return $query->fetchAll();
-    }
+		return $query->fetchAll();
+	}
 
 	public static function getAllCategories()
 	{
@@ -89,9 +90,9 @@ SQL;
 
 		$sql = "INSERT INTO sheets (title) VALUES (:sheet_title)";
 
-        $query = $database->prepare($sql);
-        $query->bindValue(':sheet_title', $sheet_title, PDO::PARAM_STR);
-        $query->execute();
+		$query = $database->prepare($sql);
+		$query->bindValue(':sheet_title', $sheet_title, PDO::PARAM_STR);
+		$query->execute();
 
 		if ($query->rowCount() == 1) {
 			$sql = "SELECT id FROM sheets WHERE title = :sheet_title LIMIT 1";
@@ -105,25 +106,26 @@ SQL;
 			return $sheet_id;
 		}
 
-        // default return
-        Session::add('feedback_negative', Text::get('FEEDBACK_NOTE_CREATION_FAILED'));
-        return false;
+		// default return
+		Session::add('feedback_negative', Text::get('FEEDBACK_NOTE_CREATION_FAILED'));
+		return false;
 	}
 
-	public static function createTransaction($sheet_id, $amount, $description, $category_id)
+	public static function createTransaction($sheet_id, $amount, $description, $category_id, $date)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 
-		$sql = "INSERT INTO transactions (amount, description, sheet_id, category_id) VALUES (:amount, :desc, :sheet_id, :category_id)";
+		$sql = "INSERT INTO transactions (amount, description, sheet_id, category_id, date) VALUES (:amount, :desc, :sheet_id, :category_id, :date)";
 
 		$query = $database->prepare($sql);
 		// PARAM_STR is the 'correct' way to bind a float
 		// src: https://www.php.net/manual/en/pdo.constants.php#129168
-        $query->bindValue(':amount', $amount, PDO::PARAM_STR);
+		$query->bindValue(':amount', $amount, PDO::PARAM_STR);
 		$query->bindValue(':desc', $description, PDO::PARAM_STR);
 		$query->bindValue(':sheet_id', $sheet_id, PDO::PARAM_INT);
 		$query->bindValue(':category_id', $category_id, PDO::PARAM_INT);
-        $query->execute();
+		$query->bindValue(':date', $date, PDO::PARAM_STR);
+		$query->execute();
 
 		if ($query->rowCount() == 1) {
 			$sql = "SELECT id FROM transactions WHERE amount = :amount AND description = :desc AND sheet_id = :sheet_id AND category_id = :category_id LIMIT 1";
@@ -142,8 +144,32 @@ SQL;
 			return $sheet_id;
 		}
 
-        // default return
-        Session::add('feedback_negative', Text::get('FEEDBACK_NOTE_CREATION_FAILED'));
-        return false;
+		// default return
+		Session::add('feedback_negative', Text::get('FEEDBACK_NOTE_CREATION_FAILED'));
+		return false;
+	}
+
+	public static function updateTransaction($id, $amount, $description, $category_id, $date)
+	{
+		$database = DatabaseFactory::getFactory()->getConnection();
+
+		$sql = "UPDATE transactions SET amount = :amount, description = :desc, category_id = :category_id, date = :date WHERE id = :id";
+
+		$query = $database->prepare($sql);
+		// PARAM_STR is the 'correct' way to bind a float
+		// src: https://www.php.net/manual/en/pdo.constants.php#129168
+		$query->bindValue(':amount', $amount, PDO::PARAM_STR);
+		$query->bindValue(':desc', $description, PDO::PARAM_STR);
+		$query->bindValue(':category_id', $category_id, PDO::PARAM_INT);
+		$query->bindValue(':id', $id, PDO::PARAM_INT);
+		$query->bindValue(':date', $date, PDO::PARAM_STR);
+		$query->execute();
+
+		if ($query->rowCount() != 1) {
+			Session::add('feedback_negative', 'Failed to update transaction' . var_export($query->errorInfo(), true));
+			return false;
+		}
+
+		return true;
 	}
 }

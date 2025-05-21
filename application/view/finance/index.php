@@ -51,13 +51,6 @@
     <?php foreach($this->sheets as $key => $value) { ?>
         <a href='<?= Config::get('URL'); ?>finance/sheet/<?= $value->id; ?>' class="list-item">
             <span href='' class="list-item-title"><?= $value->title; ?>
-            <?php if (!$value->active) { ?>
-                <i class="fas fa-rss"></i>
-            <?php } ?></span>
-            <br>
-            <div class="list-item-body"><?php
-                
-            ?></div><br>
             <span class="list-item-footer">Created on <?= $value->created_at ?></span>
         </a>
     <?php } ?>

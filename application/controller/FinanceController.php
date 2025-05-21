@@ -5,38 +5,38 @@
  */
 class FinanceController extends Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
+	public function __construct()
+	{
+		parent::__construct();
 
-        // special authentication check for the entire controller: Note the check-ADMIN-authentication!
-        // All methods inside this controller are only accessible for admins (= users that have role type 7)
-        Auth::checkAdminAuthentication();
-    }
-    
-    public function index(): void
-    {
-        $this->View->render('finance/index', [
-            "sheets" => FinanceModel::getAllSheets()
-        ]);
-    }
+		// special authentication check for the entire controller: Note the check-ADMIN-authentication!
+		// All methods inside this controller are only accessible for admins (= users that have role type 7)
+		Auth::checkAdminAuthentication();
+	}
+	
+	public function index(): void
+	{
+		$this->View->render('finance/index', [
+			"sheets" => FinanceModel::getAllSheets()
+		]);
+	}
 
-    public function sheet(int $sheet_id): void
-    {
-        $sheet = FinanceModel::getSheet($sheet_id);
-        if ($sheet === false) {
-            $controller = new ErrorController();
-            $controller->error404();
-            return;
-        }
+	public function sheet(int $sheet_id): void
+	{
+		$sheet = FinanceModel::getSheet($sheet_id);
+		if ($sheet === false) {
+			$controller = new ErrorController();
+			$controller->error404();
+			return;
+		}
 
-        $this->View->renderMetaPreview($sheet->title, "", "");
-        $this->View->render("finance/sheet", [
-            "sheet" => $sheet,
+		$this->View->renderMetaPreview($sheet->title, "", "");
+		$this->View->render("finance/sheet", [
+			"sheet" => $sheet,
 			"transactions" => FinanceModel::getSheetTransactions($sheet_id),
 			"categories" => FinanceModel::getAllCategories(),
-        ]);
-    }
+		]);
+	}
 
 	public function create(): void
 	{
@@ -60,14 +60,56 @@ class FinanceController extends Controller
 		$amount = Request::get('amount');
 		$description = Request::get('title');
 		$category_id = Request::get('category');
+		$timestamp = Request::get('timestamp');
 
 		FinanceModel::createTransaction(
 			$sheet_id,
 			$amount,
 			$description,
-			$category_id
+			$category_id,
+			$timestamp
 		);
 
 		Redirect::to('finance/sheet/'.$sheet_id);	
+	}
+
+	public function updateTransaction(): void
+	{
+		$id = Request::get('transaction_id');
+		$amount = Request::get('amount');
+		$description = Request::get('title');
+		$category_id = Request::get('category');
+		$timestamp = Request::get('timestamp');
+
+		$success = FinanceModel::updateTransaction(
+			$id,
+			$amount,
+			$description,
+			$category_id,
+			$timestamp
+		);
+
+		if ($success) {
+			$this->View->renderJSON([
+				'success' => true,
+				'new_state' => [
+					'amount' => $amount,
+					'title' => $description,
+					'category' => $category_id,
+					'date' => $timestamp
+				]
+			]);
+		} else {
+			$this->View->renderJSON([
+				'success' => false,
+				'input' => [
+					'id' => $id,
+					'amount' => $amount,
+					'title' => $description,
+					'category' => $category_id,
+					'date' => $timestamp
+				]
+			]);
+		}
 	}
 }
