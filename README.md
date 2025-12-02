@@ -1,6 +1,6 @@
-# SkidsDev
+# Mayube
 
-This repo houses the source code for my [personal portfolio website](https://skidsdev.xyz).
+This repo houses the source code for my [personal portfolio website](https://mayube.com).
 
 It's built with Gargantua, which is a fork of the php-login project "HUGE".  
 HUGE is a lightweight MVC framework created by Panique, and Gargantua is a personal continuation of the project, updating it and bringing it to PHP 8
